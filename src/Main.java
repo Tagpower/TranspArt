@@ -46,7 +46,9 @@ public class Main {
 
             System.out.println(one_vs_01.graph.toString());
 
-            //one_vs_01.findMaxMatching();
+            one_vs_01.findMaxMatching();
+
+            one_vs_01.printMatching();
 
     }
 }
