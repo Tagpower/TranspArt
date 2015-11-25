@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -12,8 +16,8 @@ public class OneVSzeroOne extends Method {
         listePages = new ArrayList<Page>();
         listeTrans = new ArrayList<Transparent>();
         graph = new HashMap<Noeud, ArrayList<Noeud>>();
-        matching = new HashMap<Transparent, Page>();
-        opposite_matching = new HashMap<Page, Transparent>();
+        matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
+        opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
         important_words = new HashSet<String>();
     }
 
@@ -22,8 +26,8 @@ public class OneVSzeroOne extends Method {
     }
 
     @Override
-    public void build_graph() { //Construire le graphe b
-        Set<String> intersect = new HashSet<String>();
+    public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
+        Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
 
         for (Transparent t : listeTrans) {
             ArrayList<Noeud> successors = new ArrayList<Noeud>();
@@ -50,6 +54,10 @@ public class OneVSzeroOne extends Method {
     //Algo recherche de couplage max
     public void findMaxMatching() {
 
+        if (listeTrans.size() > listePages.size()) {
+            //Exception
+        }
+
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
@@ -64,8 +72,6 @@ public class OneVSzeroOne extends Method {
                 opposite_matching.put((Page)neighbour, t);
                 t.setMarked(true);
                 neighbour.setMarked(true);
-            } else {
-                break;
             }
         } //Premier couplage trivial fait
 
@@ -98,7 +104,7 @@ public class OneVSzeroOne extends Method {
                     last.setMarked(true);
                     voisin.setMarked(true);
                     break;
-                } else {
+                } else { //Si un voisin non marqué est trouvé
                     Noeud t = opposite_matching.get(voisin); //On récupère le partenaire de voisin dans le couplage (un transparent depuis une page)
                     chaine.add(voisin);
                     chaine.add(t);
@@ -109,9 +115,10 @@ public class OneVSzeroOne extends Method {
         return chaine_alternee;
     }
 
+    //Appliquer le chemin augmentant pour modifier le couplage
     public void improveMatching(ArrayList<Noeud> chemin) {
         boolean ajouter_arc = true;
-        for (int i=0; i<chemin.size()-1; i++) {
+        for (int i=0; i<chemin.size()-1; i++) { //Pour chaque arête du chemin
             if (ajouter_arc) {
                 matching.put((Transparent)chemin.get(i), (Page)chemin.get(i+1));
                 opposite_matching.put((Page)chemin.get(i+1), (Transparent)chemin.get(i));
@@ -123,14 +130,50 @@ public class OneVSzeroOne extends Method {
         }
     }
 
+    //Affichage du couplage en console
     public void printMatching() {
         for (Transparent t : matching.keySet()) {
             System.out.println(t.getName() + " <-> " + matching.get(t).getName());
         }
-        for (Page p : opposite_matching.keySet()) {
-            System.out.println(p.getName() + " <-> " + opposite_matching.get(p).getName());
-        }
+//        for (Page p : opposite_matching.keySet()) {
+//            System.out.println(p.getName() + " <-> " + opposite_matching.get(p).getName());
+//        }
         assert (matching.size() == opposite_matching.size());
+    }
+
+    public void save_graph(String S) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new BufferedWriter(new FileWriter("./dot/" + S)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert pw != null;
+
+        // print the graph in dot file format
+        pw.println("graph " + S + "{");
+        for (Transparent t : listeTrans) {
+            pw.println(t.getName() + "[label=" + t.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "")*/ );
+            for (Noeud p : graph.get(t)) {
+                if (matching.get(t) == p) {
+                    pw.println(t.getName() + " -- " + p.getName() + "[color=red,penwidth=3.0]");
+                } else {
+                    pw.println(t.getName() + " -- " + p.getName());
+                }
+                pw.println(p.getName() + "[label=" + p.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "") */ );
+            }
+        }
+        pw.println("}");
+        pw.close();
+
+        // create the svg file from the dot file
+        try {
+            Process p = Runtime.getRuntime().exec("dot -O -Tsvg ./dot/" + S);
+            p.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
