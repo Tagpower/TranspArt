@@ -47,56 +47,63 @@ public class OneVSzeroOne extends Method {
         }
     }
 
-    //TODO: Algo recherche de couplage max
-    //TODO: Recherche de chemin augmentant
-
+    //Algo recherche de couplage max
     public void findMaxMatching() {
-        for (Transparent t : listeTrans) { //Création d'un premier couplage.
-            if (!t.isMarked()) {
-                Page neighbour = null; //On cherche le premier voisin de t non marqué
-                for (Page p : listePages) {
-                    if (!p.isMarked()) {
-                        neighbour = p;
-                        break;
-                    }
-                }
-                if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
-                    matching.put(t, neighbour);
-                    opposite_matching.put(neighbour, t);
-                    t.setMarked(true);
-                    neighbour.setMarked(true);
+
+        //Création d'un premier couplage trivial.
+        for (Transparent t : listeTrans) {
+            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
+            for (Noeud p : graph.get(t)) {
+                if (!p.isMarked()) {
+                    neighbour = p;
+                    break;
                 }
             }
-        }
+            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
+                matching.put(t, (Page)neighbour);
+                opposite_matching.put((Page)neighbour, t);
+                t.setMarked(true);
+                neighbour.setMarked(true);
+            } else {
+                break;
+            }
+        } //Premier couplage trivial fait
 
+        //Recherche d'un meilleur couplage
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
-            for (Noeud n : graph.keySet()) { //Pour tout sommet n non marqué
-                ArrayList<Noeud> chemin_augmentant = ameliorer(n);
-                //TODO: améliorer le couplage
-                improveMatching(chemin_augmentant);
+            for (Noeud n : listeTrans) { //Pour tout sommet n non marqué
+                if (!n.isMarked()) {
+                    ArrayList<Noeud> chemin_augmentant = ameliorer(n);
+                    improveMatching(chemin_augmentant); //Améliorer le couplage
+                }
             }
         }
 
     }
 
+    //Recherche de chemin augmentant (à partir d'un seul sommet)
     public ArrayList<Noeud> ameliorer(Noeud n) {
         return ameliorer(new ArrayList<Noeud>(Arrays.asList(n)));
     }
 
+    //Recherche de chemin augmentant
     public ArrayList<Noeud> ameliorer(ArrayList<Noeud> chaine) { //Trouver un chemin augmentant à partir d'une chaine donnée
         ArrayList<Noeud> chaine_alternee = new ArrayList<Noeud>();
         Noeud last = chaine.get(chaine.size() - 1); //On récupère le dernier sommet de la chaine
         for (Noeud voisin : graph.get(last)) { //Pour tous les voisins de ce sommet
-            if (!voisin.isMarked()) { //Si un voisin non marqué est trouvé, marquer les deux sommets : cela fera une nouvelle paire dans le couplage.
-                chaine.add(voisin);
-                chaine_alternee = chaine; //chaine alternée = chaine U voisin
-                last.setMarked(true);
-                voisin.setMarked(true);
-            } else {
-                Noeud t = opposite_matching.get(voisin); //On récupère le partenaire de voisin dans le couplage (un transparent depuis une page)
-                chaine.add(voisin);
-                chaine.add(t);
-                return ameliorer(chaine);
+            if (!chaine.contains(voisin)) {
+                if (!voisin.isMarked()) { //Si un voisin non marqué est trouvé, marquer les deux sommets : cela fera une nouvelle paire dans le couplage.
+                    chaine.add(voisin);
+                    chaine_alternee = chaine; //chaine alternée = chaine U voisin
+                    last.setMarked(true);
+                    voisin.setMarked(true);
+                    break;
+                } else {
+                    Noeud t = opposite_matching.get(voisin); //On récupère le partenaire de voisin dans le couplage (un transparent depuis une page)
+                    chaine.add(voisin);
+                    chaine.add(t);
+                    return ameliorer(chaine);
+                }
             }
         }
         return chaine_alternee;
@@ -118,11 +125,13 @@ public class OneVSzeroOne extends Method {
 
     public void printMatching() {
         for (Transparent t : matching.keySet()) {
-            System.out.println(t + " <-> " + matching.get(t));
+            System.out.println(t.getName() + " <-> " + matching.get(t).getName());
         }
         for (Page p : opposite_matching.keySet()) {
-            System.out.println(p + " <-> " + opposite_matching.get(p));
+            System.out.println(p.getName() + " <-> " + opposite_matching.get(p).getName());
         }
         assert (matching.size() == opposite_matching.size());
     }
+
+
 }

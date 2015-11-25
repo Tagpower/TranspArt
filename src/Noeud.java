@@ -12,8 +12,9 @@ import java.util.Set;
  */
 public class Noeud {
 
-    private boolean marked;
-    private Set<String> wordList;
+    private String name; //Nom du document
+    private Set<String> wordList; //Liste des mots du document
+    private boolean marked; //Un noeud est marqué s'il est couplé avec un autre noeud
 
     public Noeud() {
         wordList = new HashSet<String>();
@@ -22,9 +23,10 @@ public class Noeud {
     public Noeud(String file) {
         wordList = new HashSet<String>();
         this.readFile(file);
+        name = file.substring(0, file.length()-4);
     }
 
-    public void readFile(String file) {
+    public void readFile(String file) { //Lecture des mots du fichier
         try {
             InputStream ips = new FileInputStream(file);
             InputStreamReader ipsr = new InputStreamReader(ips);
@@ -33,7 +35,7 @@ public class Noeud {
             String line;
             //Lecture de toutes les lignes
             while ((line = br.readLine()) != null) {
-                ArrayList<String> mots_tmp = new ArrayList<String>(Arrays.asList(line.split("\\s+|,\\s*|\\.\\s*")));
+                ArrayList<String> mots_tmp = new ArrayList<String>(Arrays.asList(line.split("\\s+|,\\s*|\\.\\s*"))); //Ne garder que les mots, aucune ponctuation.
                 ArrayList<String> mots = new ArrayList<String>();
                 for (String s : mots_tmp) {
                     mots.add(s.toLowerCase());
@@ -46,6 +48,14 @@ public class Noeud {
             e.printStackTrace();
         }
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<String> getWordList() {

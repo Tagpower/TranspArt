@@ -14,6 +14,7 @@ public class Main {
 
         //TODO: Une méthode pour construire tous les trans. + toutes les pages en recherchant dans les dossiers
 
+
             Page p1 = new Page("Pages/P1.txt");
             one_vs_01.listePages.add(p1);
 
@@ -46,9 +47,12 @@ public class Main {
 
             System.out.println(one_vs_01.graph.toString());
 
+            one_vs_01.save_graph("aaa");
+
             one_vs_01.findMaxMatching();
 
             one_vs_01.printMatching();
+
 
     }
 }
