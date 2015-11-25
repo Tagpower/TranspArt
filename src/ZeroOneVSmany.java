@@ -86,6 +86,11 @@ public class ZeroOneVSmany extends Method { //TODO: tout
     }
 
     @Override
+    public boolean isMaxMatching() {
+        return matching.size() == listeTrans.size();
+    }
+
+    @Override
     public void findMaxMatching() {
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué

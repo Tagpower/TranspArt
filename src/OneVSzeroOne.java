@@ -9,20 +9,22 @@ import java.util.*;
  */
 public class OneVSzeroOne extends Method {
 
-    private HashMap<Transparent, Page> matching;
-    private HashMap<Page, Transparent> opposite_matching;
+    private HashMap<Transparent, Page> matching; //Couplage trouvé
+    private HashMap<Page, Transparent> opposite_matching; //Couplage opposé, utilisé pour retrouver un transparent à partir d'une page dans le couplage initial.
+    private ArrayList<HashMap<Transparent, Page>> previous_matchings; //Liste des couplages trouvés. Sert à détecter si l'algorithme ne se termine pas.
 
     public OneVSzeroOne() {
         listePages = new ArrayList<Page>();
         listeTrans = new ArrayList<Transparent>();
+        important_words = new HashSet<String>();
         graph = new HashMap<Noeud, ArrayList<Noeud>>();
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
-        important_words = new HashSet<String>();
+        previous_matchings = new ArrayList<>();
     }
 
-    boolean isMaxMatching() {
-        return matching.size() == listeTrans.size();
+    public boolean isMaxMatching() {
+        return (matching.size() == listeTrans.size());
     }
 
     @Override
@@ -55,7 +57,8 @@ public class OneVSzeroOne extends Method {
     public void findMaxMatching() {
 
         if (listeTrans.size() > listePages.size()) {
-            //Exception
+            //Exception : impossible d'associer tous les transparents.
+            //TODO: Vérifier aussi si tous les transparents ont des voisins.
         }
 
         //Création d'un premier couplage trivial.
@@ -74,13 +77,20 @@ public class OneVSzeroOne extends Method {
                 neighbour.setMarked(true);
             }
         } //Premier couplage trivial fait
+        previous_matchings.add(matching);
 
         //Recherche d'un meilleur couplage
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
-            for (Noeud n : listeTrans) { //Pour tout sommet n non marqué
+            for (Noeud n : listeTrans) { //Pour tout transparent n non marqué
                 if (!n.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(n);
                     improveMatching(chemin_augmentant); //Améliorer le couplage
+                    if (previous_matchings.contains(matching) && !isMaxMatching()) {
+                        System.out.println("Détection d'une boucle ! Arrêt de l'algorithme.");
+                        return;
+                    } else {
+                        previous_matchings.add(matching);
+                    }
                 }
             }
         }

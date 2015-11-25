@@ -66,6 +66,8 @@ public abstract class Method {
     //Enregistrer le graphe en format dot et svg
     public abstract void save_graph(String S);
 
+    public abstract boolean isMaxMatching();
+
     public abstract void findMaxMatching();
 
 
