@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,47 +12,51 @@ public class Main {
 
         OneVSzeroOne one_vs_01 = new OneVSzeroOne();
 
-            one_vs_01.readDico(args[0]);
+        one_vs_01.readDico(args[0]);
 
-            //TODO: Une méthode pour construire tous les trans. + toutes les pages en recherchant dans les dossiers
+        File rep_pages = new File("./Pages");
+        File rep_trans = new File("./Transparents");
 
-            Page p1 = new Page("Pages/P1.txt");
-            one_vs_01.listePages.add(p1);
+        //Création d'un filtre pour n'accepter que des fichiers texte
+        FileFilter only_txt = new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                if (file.getName().endsWith(".txt")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
 
-            Page p2 = new Page("Pages/P2.txt");
-            one_vs_01.listePages.add(p2);
+        File[] page_files = rep_pages.listFiles(only_txt);
+        File[] trans_files = rep_trans.listFiles(only_txt);
 
-            Page p3 = new Page("Pages/P3.txt");
-            one_vs_01.listePages.add(p3);
+        for (int i = 0; i < page_files.length; i++) {
+            one_vs_01.listePages.add(new Page("Pages/"+page_files[i].getName()));
+        }
+        for (int i = 0; i < trans_files.length; i++) {
+            one_vs_01.listeTrans.add(new Transparent("Transparents/"+trans_files[i].getName()));
+        }
 
-            Transparent t1 = new Transparent("Transparents/T1.txt");
-            one_vs_01.listeTrans.add(t1);
+        for (Page p : one_vs_01.listePages) {
+            System.out.println(p.getName() + " : " + p.getWordList().toString());
+        }
+        for (Transparent t : one_vs_01.listeTrans) {
+            System.out.println(t.getName() + " : " + t.getWordList().toString());
+        }
 
-            Transparent t2 = new Transparent("Transparents/T2.txt");
-            one_vs_01.listeTrans.add(t2);
+        System.out.println("Dico : " + one_vs_01.important_words.toString());
 
-            Transparent t3 = new Transparent("Transparents/T3.txt");
-            one_vs_01.listeTrans.add(t3);
+        one_vs_01.graph = new HashMap<Noeud, ArrayList<Noeud>>();
+        one_vs_01.build_graph();
+        System.out.println(one_vs_01.graph.toString());
 
-            System.out.println("P1 : " + p1.getWordList().toString());
-            System.out.println("P2 : " + p2.getWordList().toString());
-            System.out.println("P3 : " + p3.getWordList().toString());
-            System.out.println("T1 : " + t1.getWordList().toString());
-            System.out.println("T2 : " + t2.getWordList().toString());
-            System.out.println("T3 : " + t3.getWordList().toString());
-            System.out.println("Dico : " + one_vs_01.important_words.toString());
+        one_vs_01.findMaxMatching();
 
-            one_vs_01.graph = new HashMap<Noeud, ArrayList<Noeud>>();
+        one_vs_01.printMatching();
 
-            one_vs_01.build_graph();
-
-            System.out.println(one_vs_01.graph.toString());
-
-            one_vs_01.findMaxMatching();
-
-            one_vs_01.printMatching();
-
-            one_vs_01.save_graph("aaa");
+        one_vs_01.save_graph("aaa");
 
     }
 }
