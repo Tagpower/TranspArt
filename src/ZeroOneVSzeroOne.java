@@ -8,7 +8,7 @@ import java.util.HashSet;
  */
 public class ZeroOneVSzeroOne extends Method { //TODO: tout
 
-    private HashMap<Transparent, Page> matching; //Couplage trouvé
+    //private HashMap<Transparent, Page> matching;
     private HashMap<Page, Transparent> opposite_matching; //Couplage opposé, utilisé pour retrouver un transparent à partir d'une page dans le couplage initial.
     private ArrayList<HashMap<Transparent, Page>> previous_matchings; //Liste des couplages trouvés. Sert à détecter si l'algorithme ne se termine pas.
 
@@ -24,11 +24,6 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
 
     @Override
     public void build_graph() {
-
-    }
-
-    @Override
-    public void save_graph(String S) {
 
     }
 

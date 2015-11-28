@@ -14,6 +14,7 @@ public class Main {
 
         one_vs_01.readDico(args[0]);
 
+        //Récupération des répertoires contenant les pages & transparents
         File rep_pages = new File("./Pages");
         File rep_trans = new File("./Transparents");
 
@@ -21,13 +22,11 @@ public class Main {
         FileFilter only_txt = new FileFilter() {
             @Override
             public boolean accept(File file) {
-                if (file.getName().endsWith(".txt")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return file.getName().endsWith(".txt");
             }
         };
+
+        //FIXME: Gros bug. Les fichiers sont pas dans le bon ordre.
 
         File[] page_files = rep_pages.listFiles(only_txt);
         File[] trans_files = rep_trans.listFiles(only_txt);
@@ -39,6 +38,7 @@ public class Main {
             one_vs_01.listeTrans.add(new Transparent("Transparents/"+trans_files[i].getName()));
         }
 
+        //Affichage pour debug
         for (Page p : one_vs_01.listePages) {
             System.out.println(p.getName() + " : " + p.getWordList().toString());
         }
@@ -56,7 +56,7 @@ public class Main {
 
         one_vs_01.printMatching();
 
-        one_vs_01.save_graph("aaa");
+        one_vs_01.save_graph("one_vs_01");
 
     }
 }

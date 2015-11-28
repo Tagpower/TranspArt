@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by clement on 15/11/15.
@@ -13,6 +10,8 @@ public abstract class Method {
     protected ArrayList<Transparent> listeTrans;
     protected ArrayList<Page> listePages;
     protected Set<String> important_words;
+
+    protected HashMap<Transparent, Page> matching; //Couplage trouvé
 
 
     public abstract void build_graph();
@@ -64,7 +63,42 @@ public abstract class Method {
     }
 
     //Enregistrer le graphe en format dot et svg
-    public abstract void save_graph(String S);
+    public void save_graph(String S) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new BufferedWriter(new FileWriter("./dot/" + S + ".dot")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert pw != null;
+
+        //Enregistrer le graphe au format .dot
+        pw.println("graph " + S + "{");
+        for (Page p : listePages) {
+            pw.println("\t" + p.getName() + "[label=" + p.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "") */ );
+        }
+        for (Transparent t : listeTrans) {
+            pw.println("\t" + t.getName() + "[label=" + t.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "")*/ );
+            for (Noeud n : graph.get(t)) {
+                if (matching.get(t) == n) {
+                    pw.println("\t" + t.getName() + " -- " + n.getName() + "[color=red,penwidth=3.0]");
+                } else {
+                    pw.println("\t" + t.getName() + " -- " + n.getName());
+                }
+            }
+        }
+        pw.println("}");
+        pw.close();
+
+        //Créer un fichier .svg du graphe et son couplage.
+        try {
+            Process p = Runtime.getRuntime().exec("dot -O -Tsvg ./dot/" + S);
+            p.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public abstract boolean isMaxMatching();
 

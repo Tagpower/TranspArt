@@ -1,7 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +8,7 @@ import java.util.Set;
  */
 public class ZeroOneVSmany extends Method { //TODO: tout
 
-    private HashMap<Transparent, Page> matching;
+    //private HashMap<Transparent, Page> matching;
     //private HashMap<Page, ArrayList<Transparent>> opposite_matching;
 
     public ZeroOneVSmany() {
@@ -46,42 +42,6 @@ public class ZeroOneVSmany extends Method { //TODO: tout
                 graph.putIfAbsent(s, new ArrayList<Noeud>());
                 graph.get(s).add(t);
             }
-        }
-    }
-
-    @Override
-    public void save_graph(String S) {
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new BufferedWriter(new FileWriter("./dot/" + S)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assert pw != null;
-
-        //Enregistrer le graphe au format .dot
-        pw.println("graph " + S + "{");
-        for (Transparent t : listeTrans) {
-            pw.println(t.getName() + "[label=" + t.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "")*/ );
-            for (Noeud p : graph.get(t)) {
-                if (matching.get(t) == p) { //TODO: Dessiner aussi les pages non couplées
-                    pw.println(t.getName() + " -- " + p.getName() + "[color=red,penwidth=3.0]");
-                } else {
-                    pw.println(t.getName() + " -- " + p.getName());
-                }
-                pw.println(p.getName() + "[label=" + p.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "") */ );
-            }
-        }
-        pw.println("}");
-        pw.close();
-
-        //Créer un fichier .svg du graphe et son couplage.
-        try {
-            Process p = Runtime.getRuntime().exec("dot -O -Tsvg ./dot/" + S);
-            p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
