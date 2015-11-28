@@ -62,7 +62,11 @@ public class Test {
         System.out.println(one_vs_01.graph.toString());
         one_vs_01.save_graph("test");
 
-        one_vs_01.findMaxMatching();
+        try {
+            one_vs_01.findMaxMatching();
+        } catch (ImpossibleMatchingException e) {
+            e.printStackTrace();
+        }
 
         one_vs_01.printMatching();
 

@@ -133,10 +133,10 @@ public abstract class Method {
         //Enregistrer le graphe au format .dot
         pw.println("graph " + S + "{");
         for (Page p : listePages) {
-            pw.println("\t" + p.getName() + "[label=" + p.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "") */ );
+            pw.println("\t" + p.getName() + "[label=" + p.getName() + ", style=filled, fillcolor=\"#cccccc\"]" /* + (t.isMarked() ? "[color=red]" : "") */ );
         }
         for (Transparent t : listeTrans) {
-            pw.println("\t" + t.getName() + "[label=" + t.getName() + "]" /* + (t.isMarked() ? "[color=red]" : "")*/ );
+            pw.println("\t" + t.getName() + "[label=" + t.getName() + ", style=filled, fillcolor=\"#999999\"]" /* + (t.isMarked() ? "[color=red]" : "")*/ );
             for (Noeud n : graph.get(t)) {
                 if (matching.get(t) == n) {
                     pw.println("\t" + t.getName() + " -- " + n.getName() + "[color=red,penwidth=3.0]");
@@ -159,7 +159,7 @@ public abstract class Method {
 
     public abstract boolean isMaxMatching();
 
-    public abstract void findMaxMatching();
+    public abstract void findMaxMatching() throws ImpossibleMatchingException;
 
 
 

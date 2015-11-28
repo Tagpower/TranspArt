@@ -23,43 +23,21 @@ public class OneVSzeroOne extends Method {
         return (matching.size() == listeTrans.size());
     }
 
-    @Override
-    public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
-        Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
-
-        for (Transparent t : listeTrans) {
-            ArrayList<Noeud> successors = new ArrayList<Noeud>();
-            for (Page p : listePages) { //Obtenir l'intersection des mots du transparents, ceux de la page et les mots du dictionnaire.
-                intersect.clear();
-                intersect.addAll(t.getWordList());
-                intersect.retainAll(p.getWordList());
-                if (!intersect.isEmpty()) {
-                    intersect.retainAll(important_words);
-                }
-                System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + intersect.size() + " mots en commun avec la page " + (listePages.indexOf(p)+1));
-                if (intersect.size() >= 1 ) { //TODO: Trouver une meilleure condition
-                    successors.add(p);
-                }
-            }
-            graph.put(t, successors);
-            for (Noeud s : successors) { //Ajout de t comme voisin/successeur de la page
-                graph.putIfAbsent(s, new ArrayList<Noeud>());
-                graph.get(s).add(t);
-            }
-        }
-    }
 
     //Algo recherche de couplage max
-    public void findMaxMatching() {
+    public void findMaxMatching() throws ImpossibleMatchingException {
 
         if (listeTrans.size() > listePages.size()) {
-            //Exception : impossible d'associer tous les transparents.
+            throw new ImpossibleMatchingException("Couplage impossible : il y a plus de transparents que de pages.");
             //TODO: Vérifier aussi si tous les transparents ont des voisins.
         }
 
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
+            if (graph.get(t).size() == 0) {
+                throw new ImpossibleMatchingException("Couplage impossible : un ou plusieurs transparents ne possèdent pas de voisins dans le graphe.");
+            }
             for (Noeud p : graph.get(t)) {
                 if (!p.isMarked()) {
                     neighbour = p;
@@ -83,7 +61,7 @@ public class OneVSzeroOne extends Method {
                     improveMatching(chemin_augmentant); //Améliorer le couplage
                     if (previous_matchings.contains(matching) && !isMaxMatching()) {
                         System.out.println("Détection d'une boucle ! Arrêt de l'algorithme.");
-                        return;
+                        throw new ImpossibleMatchingException("Couplage impossible : il n'existe pas de couplage maximum dans le graphe.");
                     } else {
                         previous_matchings.add(matching);
                     }
@@ -125,10 +103,10 @@ public class OneVSzeroOne extends Method {
     public void improveMatching(ArrayList<Noeud> chemin) {
         boolean ajouter_arc = true;
         for (int i=0; i<chemin.size()-1; i++) { //Pour chaque arête du chemin
-            if (ajouter_arc) {
+            if (ajouter_arc) { //Ajouter une arête entre deux sommets non liés
                 matching.put((Transparent)chemin.get(i), (Page)chemin.get(i+1));
                 opposite_matching.put((Page)chemin.get(i+1), (Transparent)chemin.get(i));
-            } else {
+            } else {          //Retirer les arêtes déjà présentes sur le chemin
                 matching.remove(chemin.get(i));
                 opposite_matching.remove(chemin.get(i + 1));
             }

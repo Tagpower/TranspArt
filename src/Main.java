@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String args[]) {
 
-        ZeroOneVSzeroOne one_vs_01 = new ZeroOneVSzeroOne();
+        OneVSzeroOne one_vs_01 = new OneVSzeroOne();
 
         one_vs_01.readDico(args[0]);
 
@@ -54,7 +54,11 @@ public class Main {
         one_vs_01.build_graph(0.1);
         System.out.println(one_vs_01.graph.toString());
 
-        one_vs_01.findMaxMatching();
+        try {
+            one_vs_01.findMaxMatching();
+        } catch (ImpossibleMatchingException e) {
+            e.printStackTrace();
+        }
 
         one_vs_01.printMatching();
 

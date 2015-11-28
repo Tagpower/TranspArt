@@ -19,32 +19,6 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
         previous_matchings = new ArrayList<>();
     }
 
-    @Override
-    public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
-        Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
-
-        for (Transparent t : listeTrans) {
-            ArrayList<Noeud> successors = new ArrayList<Noeud>();
-            for (Page p : listePages) { //Obtenir l'intersection des mots du transparents, ceux de la page et les mots du dictionnaire.
-                intersect.clear();
-                intersect.addAll(t.getWordList());
-                intersect.retainAll(p.getWordList());
-                if (!intersect.isEmpty()) {
-                    intersect.retainAll(important_words);
-                }
-                System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + intersect.size() + " mots en commun avec la page " + (listePages.indexOf(p)+1));
-                if (intersect.size() >= 1 ) { //TODO: Trouver une meilleure condition
-                    successors.add(p);
-                }
-            }
-            graph.put(t, successors);
-            for (Noeud s : successors) { //Ajout de t comme voisin/successeur de la page
-                graph.putIfAbsent(s, new ArrayList<Noeud>());
-                graph.get(s).add(t);
-            }
-        }
-    }
-
 
     @Override
     public boolean isMaxMatching() {
@@ -53,7 +27,6 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
 
     //Algo recherche de couplage max
     public void findMaxMatching() { //TODO: A vérifier (gros copier/coller dégueulasse)
-
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
