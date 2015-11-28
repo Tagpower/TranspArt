@@ -26,14 +26,16 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
     }
 
     //Algo recherche de couplage max
-    public void findMaxMatching() { //TODO: A vérifier (gros copier/coller dégueulasse)
+    public void findMaxMatching() {
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
-            for (Noeud p : graph.get(t)) {
-                if (!p.isMarked()) {
-                    neighbour = p;
-                    break;
+            if (!graph.get(t).isEmpty()) {
+                for (Noeud p : graph.get(t)) {
+                    if (!p.isMarked()) {
+                        neighbour = p;
+                        break;
+                    }
                 }
             }
             if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.

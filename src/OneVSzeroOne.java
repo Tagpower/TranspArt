@@ -35,7 +35,7 @@ public class OneVSzeroOne extends Method {
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
-            if (graph.get(t).size() == 0) {
+            if (graph.get(t).isEmpty()) {
                 throw new ImpossibleMatchingException("Couplage impossible : un ou plusieurs transparents ne possèdent pas de voisins dans le graphe.");
             }
             for (Noeud p : graph.get(t)) {

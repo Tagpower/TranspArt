@@ -88,7 +88,7 @@ public abstract class Method {
                 }
             }
             graph.put(t, successors);
-            for (Noeud s : successors) { //Ajout de t comme voisin/successeur de la page
+            for (Noeud s : successors) { //Ajout de t comme voisin/successeur de la page, et inversement
                 graph.putIfAbsent(s, new ArrayList<Noeud>());
                 graph.get(s).add(t);
             }

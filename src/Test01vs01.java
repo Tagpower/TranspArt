@@ -6,11 +6,11 @@ import java.util.Map;
 /**
  * Created by clement on 25/11/15.
  */
-public class Test3 {
+public class Test01vs01 {
     //TEST
     public static void main(String[] args) {
 
-        ZeroOneVSmany z1_vs_many = new ZeroOneVSmany();
+        ZeroOneVSzeroOne z1_vs_01 = new ZeroOneVSzeroOne();
 
         Transparent t1 = new Transparent();
         Transparent t2 = new Transparent();
@@ -21,7 +21,6 @@ public class Test3 {
         Transparent t7 = new Transparent();
         Transparent t8 = new Transparent();
         Transparent t9 = new Transparent();
-        Transparent t10 = new Transparent();
         t1.setName("T1");
         t2.setName("T2");
         t3.setName("T3");
@@ -31,17 +30,15 @@ public class Test3 {
         t7.setName("T7");
         t8.setName("T8");
         t9.setName("T9");
-        t10.setName("T10");
-        z1_vs_many.listeTrans.add(t1);
-        z1_vs_many.listeTrans.add(t2);
-        z1_vs_many.listeTrans.add(t3);
-        z1_vs_many.listeTrans.add(t4);
-        z1_vs_many.listeTrans.add(t5);
-        z1_vs_many.listeTrans.add(t6);
-        z1_vs_many.listeTrans.add(t7);
-        z1_vs_many.listeTrans.add(t8);
-        z1_vs_many.listeTrans.add(t9);
-        z1_vs_many.listeTrans.add(t10);
+        z1_vs_01.listeTrans.add(t1);
+        z1_vs_01.listeTrans.add(t2);
+        z1_vs_01.listeTrans.add(t3);
+        z1_vs_01.listeTrans.add(t4);
+        z1_vs_01.listeTrans.add(t5);
+        z1_vs_01.listeTrans.add(t6);
+        z1_vs_01.listeTrans.add(t7);
+        z1_vs_01.listeTrans.add(t8);
+        z1_vs_01.listeTrans.add(t9);
 
         Page p1 = new Page();
         Page p2 = new Page();
@@ -61,15 +58,15 @@ public class Test3 {
         p7.setName("P7");
         p8.setName("P8");
         p9.setName("P9");
-        z1_vs_many.listePages.add(p1);
-        z1_vs_many.listePages.add(p2);
-        z1_vs_many.listePages.add(p3);
-        z1_vs_many.listePages.add(p4);
-        z1_vs_many.listePages.add(p5);
-        z1_vs_many.listePages.add(p6);
-        z1_vs_many.listePages.add(p7);
-        z1_vs_many.listePages.add(p8);
-        z1_vs_many.listePages.add(p9);
+        z1_vs_01.listePages.add(p1);
+        z1_vs_01.listePages.add(p2);
+        z1_vs_01.listePages.add(p3);
+        z1_vs_01.listePages.add(p4);
+        z1_vs_01.listePages.add(p5);
+        z1_vs_01.listePages.add(p6);
+        z1_vs_01.listePages.add(p7);
+        z1_vs_01.listePages.add(p8);
+        z1_vs_01.listePages.add(p9);
 
         Map<Noeud, ArrayList<Noeud>> leSuperGrapheDeTest = new HashMap<Noeud, ArrayList<Noeud>>();
 
@@ -82,9 +79,6 @@ public class Test3 {
         leSuperGrapheDeTest.put(t7, new ArrayList<Noeud>(Arrays.asList(p4, p7, p9)));
         leSuperGrapheDeTest.put(t8, new ArrayList<Noeud>(Arrays.asList(p3, p5, p8)));
         leSuperGrapheDeTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
-        leSuperGrapheDeTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
-        leSuperGrapheDeTest.put(t10, new ArrayList<Noeud>());
-
 
         leSuperGrapheDeTest.put(p1, new ArrayList<Noeud>(Arrays.asList(t1, t5)));
         leSuperGrapheDeTest.put(p2, new ArrayList<Noeud>(Arrays.asList(t2, t4, t5, t6)));
@@ -96,14 +90,14 @@ public class Test3 {
         leSuperGrapheDeTest.put(p8, new ArrayList<Noeud>(Arrays.asList(t6, t8)));
         leSuperGrapheDeTest.put(p9, new ArrayList<Noeud>(Arrays.asList(t7)));
 
-        z1_vs_many.setGraph(leSuperGrapheDeTest);
-        System.out.println(z1_vs_many.graph.toString());
+        z1_vs_01.setGraph(leSuperGrapheDeTest);
+        System.out.println(z1_vs_01.graph.toString());
 
-        z1_vs_many.findMaxMatching();
+        z1_vs_01.findMaxMatching();
 
-        z1_vs_many.printMatching();
+        z1_vs_01.printMatching();
 
-        z1_vs_many.save_graph("test01_vs_M");
+        z1_vs_01.save_graph("test01vs01");
 
     }
 }
