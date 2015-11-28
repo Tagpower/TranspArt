@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Created by clement on 25/11/15.
@@ -23,9 +20,31 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
     }
 
     @Override
-    public void build_graph() {
+    public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
+        Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
 
+        for (Transparent t : listeTrans) {
+            ArrayList<Noeud> successors = new ArrayList<Noeud>();
+            for (Page p : listePages) { //Obtenir l'intersection des mots du transparents, ceux de la page et les mots du dictionnaire.
+                intersect.clear();
+                intersect.addAll(t.getWordList());
+                intersect.retainAll(p.getWordList());
+                if (!intersect.isEmpty()) {
+                    intersect.retainAll(important_words);
+                }
+                System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + intersect.size() + " mots en commun avec la page " + (listePages.indexOf(p)+1));
+                if (intersect.size() >= 1 ) { //TODO: Trouver une meilleure condition
+                    successors.add(p);
+                }
+            }
+            graph.put(t, successors);
+            for (Noeud s : successors) { //Ajout de t comme voisin/successeur de la page
+                graph.putIfAbsent(s, new ArrayList<Noeud>());
+                graph.get(s).add(t);
+            }
+        }
     }
+
 
     @Override
     public boolean isMaxMatching() {
@@ -60,7 +79,7 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
                     ArrayList<Noeud> chemin_augmentant = ameliorer(n);
                     improveMatching(chemin_augmentant); //Améliorer le couplage
                     if (previous_matchings.contains(matching) && !isMaxMatching()) {
-                        System.out.println("Détection d'une boucle ! Arrêt de l'algorithme.");
+                        System.out.println("Détection d'une boucle ! Le couplage courant est maximal, arrêt de l'algorithme.");
                         return;
                     } else {
                         previous_matchings.add(matching);
@@ -114,5 +133,11 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
         }
     }
 
+    //Affichage du couplage en console
+    public void printMatching() {
+        for (Transparent t : matching.keySet()) {
+            System.out.println(t.getName() + " <-> " + matching.get(t).getName());
+        }
+    }
 
 }

@@ -141,9 +141,6 @@ public class OneVSzeroOne extends Method {
         for (Transparent t : matching.keySet()) {
             System.out.println(t.getName() + " <-> " + matching.get(t).getName());
         }
-//        for (Page p : opposite_matching.keySet()) {
-//            System.out.println(p.getName() + " <-> " + opposite_matching.get(p).getName());
-//        }
         assert (matching.size() == opposite_matching.size());
     }
 

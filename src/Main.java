@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -10,7 +11,7 @@ public class Main {
 
     public static void main(String args[]) {
 
-        OneVSzeroOne one_vs_01 = new OneVSzeroOne();
+        ZeroOneVSzeroOne one_vs_01 = new ZeroOneVSzeroOne();
 
         one_vs_01.readDico(args[0]);
 
@@ -26,10 +27,10 @@ public class Main {
             }
         };
 
-        //FIXME: Gros bug. Les fichiers sont pas dans le bon ordre.
-
         File[] page_files = rep_pages.listFiles(only_txt);
         File[] trans_files = rep_trans.listFiles(only_txt);
+        Arrays.sort(page_files);
+        Arrays.sort(trans_files);
 
         for (int i = 0; i < page_files.length; i++) {
             one_vs_01.listePages.add(new Page("Pages/"+page_files[i].getName()));
@@ -49,14 +50,15 @@ public class Main {
         System.out.println("Dico : " + one_vs_01.important_words.toString());
 
         one_vs_01.graph = new HashMap<Noeud, ArrayList<Noeud>>();
-        one_vs_01.build_graph();
+        //one_vs_01.build_graph();
+        one_vs_01.build_graph(0.1);
         System.out.println(one_vs_01.graph.toString());
 
         one_vs_01.findMaxMatching();
 
         one_vs_01.printMatching();
 
-        one_vs_01.save_graph("one_vs_01");
+        one_vs_01.save_graph("z1_vs_01");
 
     }
 }
