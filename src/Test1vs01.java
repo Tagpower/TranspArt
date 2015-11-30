@@ -51,7 +51,7 @@ public class Test1vs01 {
 
         one_vs_01.graph = new HashMap<Noeud, ArrayList<Noeud>>();
         //one_vs_01.build_graph();
-        one_vs_01.build_graph(0.2);
+        one_vs_01.build_graph(Double.parseDouble(args[1]), false);
         System.out.println(one_vs_01.graph.toString());
 
         try {

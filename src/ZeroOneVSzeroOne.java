@@ -7,6 +7,7 @@ import java.util.*;
  * Contrairement à la variante One-VS-ZeroOne, le couplage trouvé peut ne pas coupler tous les transparents.
  *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class ZeroOneVSzeroOne extends Method {
 

@@ -8,6 +8,7 @@ import java.util.HashSet;
  * Une page peut être associée à plusieurs transparents.
  *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class ZeroOneVSmany extends Method {
 

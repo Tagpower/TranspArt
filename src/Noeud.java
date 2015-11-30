@@ -11,6 +11,7 @@ import java.util.Set;
  * Classe représentant un noeud dans le graphe, qui est soit un <i>Transparent</i> soit une <i>Page</i>.
  *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class Noeud {
 

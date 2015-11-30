@@ -1,10 +1,11 @@
 /**
  * Classe représentant un noeud correspondant à une <i>Page</i>.
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class Page extends Noeud {
 
-    public static int nbPages = 0; //Nombre de pages total
+    public static int nbPages = 0; //Nombre total de pages
 
     public Page() {
         super();
@@ -17,7 +18,7 @@ public class Page extends Noeud {
     public Page(String file) {
         super(file);
         nbPages++;
-        setName("P"+nbPages);
+        setName("A"+nbPages);
     }
 
 }

@@ -1,6 +1,8 @@
 /**
  * Classe représentant un noeud correspondant à un <i>Transparent</i>.
+ *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class Transparent extends Noeud {
 

@@ -6,6 +6,7 @@ import java.util.*;
  * Une page ne peut pas être associée à plusieurs transparents.
  *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public class OneVSzeroOne extends Method {
 

@@ -5,6 +5,7 @@ import java.util.*;
  * Classe abstraite regroupant les méthodes communes aux trois variantes du problème.
  *
  * @author Clément Bauchet
+ * @author Mélissa Obodje
  */
 public abstract class Method {
 
@@ -77,9 +78,10 @@ public abstract class Method {
     /**
      * Construction du graphe biparti avec les <i>Transparents</i> d'un côté, et les <i>Pages</i> de l'autre.
      * Une arête est construite entre deux documents si et seulement si ils possèdent un taux de mots importants en commun suffisamment élevé.
+     *
      * @param alpha le taux minimum de mots en commun à avoir pour créer une arête
      */
-    public void build_graph(double alpha) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
+    public void build_graph(double alpha, boolean verbose) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
         Set<String> intersect = new HashSet<>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
         Set<String> union = new HashSet<>(); //Ensemble des mots du transparent et de la page qui sont présents dans le dictionnaire.
 
@@ -89,17 +91,19 @@ public abstract class Method {
                 intersect.clear();
                 intersect.addAll(t.getWordList());
                 intersect.retainAll(p.getWordList());
-                union.clear();
+                union.clear();  //Obtenir l'union des mots du transparent et des mots de la page
                 union.addAll(t.getWordList());
                 union.addAll(p.getWordList());
-                if (!intersect.isEmpty() && !union.isEmpty()) {
+                if (!intersect.isEmpty() && !union.isEmpty()) { //Filtrer les deux ensembles avec les mots du dictionnaire
                     intersect.retainAll(important_words);
                     union.retainAll(important_words);
                 }
                 double taux_commun = new Double(intersect.size()) / new Double(union.size()); //Mesure du taux de mots importants en commun
-                System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + (taux_commun*100) + " % de mots en commun avec la page " + (listePages.indexOf(p)+1));
+                if (verbose) {
+                    System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + (taux_commun*100) + " % de mots en commun avec la page " + (listePages.indexOf(p)+1));
+                }
                 if (taux_commun >= alpha) {
-                    successors.add(p);
+                    successors.add(p); //Si la proportion de mots importants est plus grande que le seuil spécifié, une association des deux documents est alors envisageable : construire une arête.
                 }
             }
             graph.put(t, successors);
@@ -108,6 +112,22 @@ public abstract class Method {
                 graph.get(s).add(t);
             }
         }
+    }
+
+    /**
+     * Retourne la liste des noeuds de type <i>Page</i> traîtés par la méthode
+     * @return la liste des pages du graphe
+     */
+    public ArrayList<Page> getListePages() {
+        return this.listePages;
+    }
+
+    /**
+     * Retourne la liste des noeuds de type <i>Transparent</i> traîtés par la méthode
+     * @return la liste des transparents du graphe
+     */
+    public ArrayList<Transparent> getListeTrans() {
+        return this.listeTrans;
     }
 
     /**
