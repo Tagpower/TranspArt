@@ -1,11 +1,15 @@
 import java.util.*;
 
 /**
- * Created by clement on 25/11/15.
+ * Classe résolvant le problème de couplage maximum dans un graphe biparti - Variante ZeroOne-VS-ZeroOne :
+ * Variante du problème qui associe <b>un maximum de transparents à exactement une page chacun</b>.
+ * Une page ne peut pas être associée à plusieurs transparents.
+ * Contrairement à la variante One-VS-ZeroOne, le couplage trouvé peut ne pas coupler tous les transparents.
+ *
+ * @author Clément Bauchet
  */
-public class ZeroOneVSzeroOne extends Method { //TODO: tout
+public class ZeroOneVSzeroOne extends Method {
 
-    //private HashMap<Transparent, Page> matching;
     private HashMap<Page, Transparent> opposite_matching; //Couplage opposé, utilisé pour retrouver un transparent à partir d'une page dans le couplage initial.
     private ArrayList<HashMap<Transparent, Page>> previous_matchings; //Liste des couplages trouvés. Sert à détecter si l'algorithme ne se termine pas.
 
@@ -19,13 +23,18 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
         previous_matchings = new ArrayList<>();
     }
 
-
+    /**
+     * Retourne un booléen indiquant si le couplage est optimal, c'est-à-dire si tous les transparents ou toutes les pages sont couplés.
+     * @return vrai si le couplage est optimal
+     */
     @Override
     public boolean isMaxMatching() {
         return (matching.size() == listeTrans.size() || matching.size() == listePages.size());
     }
 
-    //Algo recherche de couplage max
+    /**
+     * Fonction permettant de trouver un couplage maximal dans le graphe, par remplissage d'un premier couplage trivial, puis par améliorations successives en trouvant un chemin augmentant.
+     */
     public void findMaxMatching() {
         //Création d'un premier couplage trivial.
         for (Transparent t : listeTrans) {
@@ -65,12 +74,21 @@ public class ZeroOneVSzeroOne extends Method { //TODO: tout
 
     }
 
-    //Recherche de chemin augmentant (à partir d'un seul sommet)
+    /**
+     * Recherche d'un chemin augmentant à partir d'un seul sommet
+     * @param n le sommet d'où commencer le chemin
+     * @return une liste de noeuds représentant le chemin augmentant trouvé
+     */
     public ArrayList<Noeud> ameliorer(Noeud n) {
         return ameliorer(new ArrayList<Noeud>(Arrays.asList(n)));
     }
 
-    //Recherche de chemin augmentant
+    /**
+     * Recherche d'un chemin augmentant à partir d'une chaîne de sommets déjà trouvée
+     * La fonction est appelée récursivement jusqu'à ce que le chemin ne puisse plus être amélioré.
+     * @param chaine la chaîne augmentante à prolonger
+     * @return une liste de noeuds représentant le chemin augmentant trouvé
+     */
     public ArrayList<Noeud> ameliorer(ArrayList<Noeud> chaine) { //Trouver un chemin augmentant à partir d'une chaine donnée
         ArrayList<Noeud> chaine_alternee = new ArrayList<Noeud>();
         Noeud last = chaine.get(chaine.size() - 1); //On récupère le dernier sommet de la chaine

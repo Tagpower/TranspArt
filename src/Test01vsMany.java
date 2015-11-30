@@ -12,8 +12,6 @@ public class Test01vsMany {
 
             z1_vs_many.readDico(args[0]);
 
-            //TODO: Une méthode pour construire tous les trans. + toutes les pages en recherchant dans les dossiers
-
             Page p1 = new Page("Pages/P1.txt");
             z1_vs_many.listePages.add(p1);
 
@@ -50,7 +48,7 @@ public class Test01vsMany {
 
             z1_vs_many.printMatching();
 
-            z1_vs_many.save_graph("aaabbb");
+            z1_vs_many.save_graph("test01vsM");
 
     }
 }

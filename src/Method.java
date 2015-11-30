@@ -2,7 +2,9 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by clement on 15/11/15.
+ * Classe abstraite regroupant les méthodes communes aux trois variantes du problème.
+ *
+ * @author Clément Bauchet
  */
 public abstract class Method {
 
@@ -14,7 +16,10 @@ public abstract class Method {
     protected HashMap<Transparent, Page> matching; //Couplage trouvé
 
 
-    //Remplissage du dictionnaire de mots importants
+    /**
+     * Fonction remplissant le dictionnaire des mots importants depuis un fichier texte.
+     * @param file le chemin du fichier dictionnaire contenant les mots importants.
+     */
     public void readDico(String file) {
         try {
             InputStream ips = new FileInputStream(file);
@@ -24,10 +29,10 @@ public abstract class Method {
             String line;
             //Lecture de toutes les lignes
             while ((line = br.readLine()) != null) {
-                ArrayList<String> mots_tmp = new ArrayList<String>(Arrays.asList(line.split("\\s+|,\\s*|\\.\\s*")));
+                ArrayList<String> mots_tmp = new ArrayList<String>(Arrays.asList(line.split("\\s+|,\\s*|\\.\\s*"))); //Ne garder que les mots, aucune ponctuation.
                 ArrayList<String> mots = new ArrayList<String>();
                 for (String s : mots_tmp) {
-                    mots.add(s.toLowerCase());
+                    mots.add(s.toLowerCase()); //Tous les mots sont gardés en minuscule
                 }
                 this.important_words.addAll(mots);
             }
@@ -39,6 +44,11 @@ public abstract class Method {
 
     }
 
+    /**
+     * Construction du graphe biparti avec les <i>Transparents</i> d'un côté, et les <i>Pages</i> de l'autre.
+     * Une arête est construite entre deux documents si et seulement si ils possèdent suffisamment de mots importants en commun.
+     * Pour cette version, un seul mot en commun suffit.
+     */
     public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
         Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
 
@@ -52,7 +62,7 @@ public abstract class Method {
                     intersect.retainAll(important_words);
                 }
                 System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + intersect.size() + " mots en commun avec la page " + (listePages.indexOf(p)+1));
-                if (intersect.size() >= 1 ) { //TODO: Trouver une meilleure condition
+                if (intersect.size() >= 1 ) {
                     successors.add(p);
                 }
             }
@@ -64,24 +74,29 @@ public abstract class Method {
         }
     }
 
-    //WIP : Autre mesure
+    /**
+     * Construction du graphe biparti avec les <i>Transparents</i> d'un côté, et les <i>Pages</i> de l'autre.
+     * Une arête est construite entre deux documents si et seulement si ils possèdent un taux de mots importants en commun suffisamment élevé.
+     * @param alpha le taux minimum de mots en commun à avoir pour créer une arête
+     */
     public void build_graph(double alpha) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
         Set<String> intersect = new HashSet<>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
-        Set<String> union = new HashSet<>();
+        Set<String> union = new HashSet<>(); //Ensemble des mots du transparent et de la page qui sont présents dans le dictionnaire.
 
         for (Transparent t : listeTrans) {
-            ArrayList<Noeud> successors = new ArrayList<Noeud>();
+            ArrayList<Noeud> successors = new ArrayList<Noeud>(); //Préparation des successeurs à mettre pour chaque noeud
             for (Page p : listePages) { //Obtenir l'intersection des mots du transparents, ceux de la page et les mots du dictionnaire.
                 intersect.clear();
                 intersect.addAll(t.getWordList());
                 intersect.retainAll(p.getWordList());
+                union.clear();
                 union.addAll(t.getWordList());
                 union.addAll(p.getWordList());
                 if (!intersect.isEmpty() && !union.isEmpty()) {
                     intersect.retainAll(important_words);
                     union.retainAll(important_words);
                 }
-                double taux_commun = new Double(intersect.size()) / new Double(union.size());
+                double taux_commun = new Double(intersect.size()) / new Double(union.size()); //Mesure du taux de mots importants en commun
                 System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + (taux_commun*100) + " % de mots en commun avec la page " + (listePages.indexOf(p)+1));
                 if (taux_commun >= alpha) {
                     successors.add(p);
@@ -95,31 +110,18 @@ public abstract class Method {
         }
     }
 
-
-
-
-    //DEBUG
+    /**
+     * Change le graphe actuellement considéré par le problème (Fonction de débug)
+     * @param g le graphe à établir
+     */
     public void setGraph(Map<Noeud, ArrayList<Noeud>> g) { //Only for debug
         graph = g;
     }
 
-    public ArrayList<Transparent> getListeTrans() {
-        return listeTrans;
-    }
-
-    public void setListeTrans(ArrayList<Transparent> listeTrans) {
-        this.listeTrans = listeTrans;
-    }
-
-    public ArrayList<Page> getListePages() {
-        return listePages;
-    }
-
-    public void setListePages(ArrayList<Page> listePages) {
-        this.listePages = listePages;
-    }
-
-    //Enregistrer le graphe en format dot et svg
+    /**
+     * Enregistrement du graphe sous forme d'un schéma en format .dot et .svg, pour la visualisation.
+     * @param S le nom sous lequel enregistrer les fichiers
+     */
     public void save_graph(String S) {
         PrintWriter pw = null;
         try {
@@ -157,8 +159,17 @@ public abstract class Method {
         }
     }
 
+    /**
+     * Retourne un booléen indiquant si le couplage est optimal, c'est-à-dire si tous les transparents sont couplés.
+     * @return vrai si le couplage est optimal
+     */
     public abstract boolean isMaxMatching();
 
+    /**
+     * Fonction permettant de trouver un couplage maximal
+     * Dans la variante OneVSzeroOne, renvoie une exception s'il n'est pas possible de coupler tous les transparents.
+     * @throws ImpossibleMatchingException si le couplage optimal n'est pas trouvable
+     */
     public abstract void findMaxMatching() throws ImpossibleMatchingException;
 
 

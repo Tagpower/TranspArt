@@ -44,21 +44,21 @@ public class Test {
         one_vs_01.listePages.add(p4);
         one_vs_01.listePages.add(p5);
 
-        Map<Noeud, ArrayList<Noeud>> leSuperGrapheDeTest = new HashMap<Noeud, ArrayList<Noeud>>();
+        Map<Noeud, ArrayList<Noeud>> grapheTest = new HashMap<Noeud, ArrayList<Noeud>>();
 
-        leSuperGrapheDeTest.put(t1, new ArrayList<Noeud>(Arrays.asList(p2, p3, p4)));
-        leSuperGrapheDeTest.put(t2, new ArrayList<Noeud>(Arrays.asList(p2, p3, p5)));
-        leSuperGrapheDeTest.put(t3, new ArrayList<Noeud>(Arrays.asList(p1, p3, p5)));
-        leSuperGrapheDeTest.put(t4, new ArrayList<Noeud>(Arrays.asList(p4)));
-        leSuperGrapheDeTest.put(t5, new ArrayList<Noeud>(Arrays.asList(p2)));
+        grapheTest.put(t1, new ArrayList<Noeud>(Arrays.asList(p2, p3, p4)));
+        grapheTest.put(t2, new ArrayList<Noeud>(Arrays.asList(p2, p3, p5)));
+        grapheTest.put(t3, new ArrayList<Noeud>(Arrays.asList(p1, p3, p5)));
+        grapheTest.put(t4, new ArrayList<Noeud>(Arrays.asList(p4)));
+        grapheTest.put(t5, new ArrayList<Noeud>(Arrays.asList(p2)));
 
-        leSuperGrapheDeTest.put(p1, new ArrayList<Noeud>(Arrays.asList(t3)));
-        leSuperGrapheDeTest.put(p2, new ArrayList<Noeud>(Arrays.asList(t2, t5)));
-        leSuperGrapheDeTest.put(p3, new ArrayList<Noeud>(Arrays.asList(t1, t2, t3)));
-        leSuperGrapheDeTest.put(p4, new ArrayList<Noeud>(Arrays.asList(t1, t4)));
-        leSuperGrapheDeTest.put(p5, new ArrayList<Noeud>(Arrays.asList(t2, t3)));
+        grapheTest.put(p1, new ArrayList<Noeud>(Arrays.asList(t3)));
+        grapheTest.put(p2, new ArrayList<Noeud>(Arrays.asList(t2, t5)));
+        grapheTest.put(p3, new ArrayList<Noeud>(Arrays.asList(t1, t2, t3)));
+        grapheTest.put(p4, new ArrayList<Noeud>(Arrays.asList(t1, t4)));
+        grapheTest.put(p5, new ArrayList<Noeud>(Arrays.asList(t2, t3)));
 
-        one_vs_01.setGraph(leSuperGrapheDeTest);
+        one_vs_01.setGraph(grapheTest);
         System.out.println(one_vs_01.graph.toString());
         one_vs_01.save_graph("test");
 

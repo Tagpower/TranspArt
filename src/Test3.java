@@ -71,32 +71,32 @@ public class Test3 {
         z1_vs_many.listePages.add(p8);
         z1_vs_many.listePages.add(p9);
 
-        Map<Noeud, ArrayList<Noeud>> leSuperGrapheDeTest = new HashMap<Noeud, ArrayList<Noeud>>();
+        Map<Noeud, ArrayList<Noeud>> grapheTest = new HashMap<Noeud, ArrayList<Noeud>>();
 
-        leSuperGrapheDeTest.put(t1, new ArrayList<Noeud>(Arrays.asList(p1, p6)));
-        leSuperGrapheDeTest.put(t2, new ArrayList<Noeud>(Arrays.asList(p2)));
-        leSuperGrapheDeTest.put(t3, new ArrayList<Noeud>(Arrays.asList(p3, p6)));
-        leSuperGrapheDeTest.put(t4, new ArrayList<Noeud>(Arrays.asList(p2, p6)));
-        leSuperGrapheDeTest.put(t5, new ArrayList<Noeud>(Arrays.asList(p1, p2, p3)));
-        leSuperGrapheDeTest.put(t6, new ArrayList<Noeud>(Arrays.asList(p2, p4, p8)));
-        leSuperGrapheDeTest.put(t7, new ArrayList<Noeud>(Arrays.asList(p4, p7, p9)));
-        leSuperGrapheDeTest.put(t8, new ArrayList<Noeud>(Arrays.asList(p3, p5, p8)));
-        leSuperGrapheDeTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
-        leSuperGrapheDeTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
-        leSuperGrapheDeTest.put(t10, new ArrayList<Noeud>());
+        grapheTest.put(t1, new ArrayList<Noeud>(Arrays.asList(p1, p6)));
+        grapheTest.put(t2, new ArrayList<Noeud>(Arrays.asList(p2)));
+        grapheTest.put(t3, new ArrayList<Noeud>(Arrays.asList(p3, p6)));
+        grapheTest.put(t4, new ArrayList<Noeud>(Arrays.asList(p2, p6)));
+        grapheTest.put(t5, new ArrayList<Noeud>(Arrays.asList(p1, p2, p3)));
+        grapheTest.put(t6, new ArrayList<Noeud>(Arrays.asList(p2, p4, p8)));
+        grapheTest.put(t7, new ArrayList<Noeud>(Arrays.asList(p4, p7, p9)));
+        grapheTest.put(t8, new ArrayList<Noeud>(Arrays.asList(p3, p5, p8)));
+        grapheTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
+        grapheTest.put(t9, new ArrayList<Noeud>(Arrays.asList(p6)));
+        grapheTest.put(t10, new ArrayList<Noeud>());
 
 
-        leSuperGrapheDeTest.put(p1, new ArrayList<Noeud>(Arrays.asList(t1, t5)));
-        leSuperGrapheDeTest.put(p2, new ArrayList<Noeud>(Arrays.asList(t2, t4, t5, t6)));
-        leSuperGrapheDeTest.put(p3, new ArrayList<Noeud>(Arrays.asList(t3, t5, t8)));
-        leSuperGrapheDeTest.put(p4, new ArrayList<Noeud>(Arrays.asList(t6, t7)));
-        leSuperGrapheDeTest.put(p5, new ArrayList<Noeud>(Arrays.asList(t8)));
-        leSuperGrapheDeTest.put(p6, new ArrayList<Noeud>(Arrays.asList(t1, t3, t4, t9)));
-        leSuperGrapheDeTest.put(p7, new ArrayList<Noeud>(Arrays.asList(t7)));
-        leSuperGrapheDeTest.put(p8, new ArrayList<Noeud>(Arrays.asList(t6, t8)));
-        leSuperGrapheDeTest.put(p9, new ArrayList<Noeud>(Arrays.asList(t7)));
+        grapheTest.put(p1, new ArrayList<Noeud>(Arrays.asList(t1, t5)));
+        grapheTest.put(p2, new ArrayList<Noeud>(Arrays.asList(t2, t4, t5, t6)));
+        grapheTest.put(p3, new ArrayList<Noeud>(Arrays.asList(t3, t5, t8)));
+        grapheTest.put(p4, new ArrayList<Noeud>(Arrays.asList(t6, t7)));
+        grapheTest.put(p5, new ArrayList<Noeud>(Arrays.asList(t8)));
+        grapheTest.put(p6, new ArrayList<Noeud>(Arrays.asList(t1, t3, t4, t9)));
+        grapheTest.put(p7, new ArrayList<Noeud>(Arrays.asList(t7)));
+        grapheTest.put(p8, new ArrayList<Noeud>(Arrays.asList(t6, t8)));
+        grapheTest.put(p9, new ArrayList<Noeud>(Arrays.asList(t7)));
 
-        z1_vs_many.setGraph(leSuperGrapheDeTest);
+        z1_vs_many.setGraph(grapheTest);
         System.out.println(z1_vs_many.graph.toString());
 
         z1_vs_many.findMaxMatching();

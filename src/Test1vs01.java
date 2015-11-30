@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Created by clement on 18/11/15.
  */
-public class Main {
+public class Test1vs01 {
 
     public static void main(String args[]) {
 
@@ -62,7 +62,7 @@ public class Main {
 
         one_vs_01.printMatching();
 
-        one_vs_01.save_graph("z1_vs_01");
+        one_vs_01.save_graph("test1vs01");
 
     }
 }
