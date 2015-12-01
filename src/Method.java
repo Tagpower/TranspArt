@@ -174,6 +174,7 @@ public abstract class Method {
         try {
             Process p = Runtime.getRuntime().exec("dot -O -Tsvg ./dot/" + S);
             p.waitFor();
+            System.out.println("Graphe sauvegardé sous ./dot/" + S + ".svg");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

@@ -10,6 +10,26 @@ public class Main {
 
     public static void main(String args[]) { //Argument 1 : Nom du dico, Argument 2 : seuil de similarité, Argument 3 : verbose
 
+        String path_dico = "";
+        double seuil = 0.1;
+        boolean verbose = false;
+
+        switch (args.length) {
+            case 3:
+                if (args[2].equals("verbose")) verbose = true;
+            case 2:
+                seuil = Double.parseDouble(args[1]);
+            case 1:
+                path_dico = args[0];
+                break;
+            default:
+                System.out.println("Usage : java Main chemin_du_dictionnaire.txt [seuil_de_similarite] [verbose]\n" +
+                                   "\tchemin_du_dictionnaire : le fichier texte contenant les mots importants\n" +
+                                   "\tseuil_de_similarite : valeur reelle entre 0 et 1 indiquant le taux de similarite minimum pour lier deux documents\n" +
+                                   "\tverbose : taper 'verbose' pour imprimer des informations supplementaires en console");
+                System.exit(0);
+        }
+
         //Récupération des répertoires contenant les pages & transparents
         File rep_pages = new File("./Pages");
         File rep_trans = new File("./Transparents");
@@ -31,14 +51,10 @@ public class Main {
         ZeroOneVSzeroOne z1_vs_01 = new ZeroOneVSzeroOne();
         ZeroOneVSmany z1_vs_m = new ZeroOneVSmany();
 
-        one_vs_01.readDico(args[0]);
-        z1_vs_01.readDico(args[0]);
-        z1_vs_m.readDico(args[0]);
+        one_vs_01.readDico(path_dico);
+        z1_vs_01.readDico(path_dico);
+        z1_vs_m.readDico(path_dico);
 
-        boolean verbose = false;
-        if (args[2].equals("verbose")) {
-            verbose = true;
-        }
 
         for (int i = 0; i < page_files.length; i++) {
             Page p = new Page("Pages/" + page_files[i].getName());
@@ -54,18 +70,22 @@ public class Main {
             z1_vs_m.listeTrans.add(t);
         }
 
-        double seuil = 0.001;
-        if (!args[1].isEmpty()) {
-            seuil = Double.parseDouble(args[1]);
-        }
-
         try {
+            System.out.println("--- VARIANTE 1-VS-01 ---");
             one_vs_01.build_graph(seuil, verbose);
             one_vs_01.findMaxMatching();
             one_vs_01.printMatching();
             one_vs_01.save_graph("oneVS01");
         } catch (ImpossibleMatchingException e) {
-            System.out.println("Recours à la variante ZeroOne-VS-ZeroOne");
+            System.out.println("La variante 1-VS-01 n'a pas de solution.\nRecours à la variante ZeroOne-VS-ZeroOne");
+            for (Page p : z1_vs_01.getListePages()) {
+                p.setMarked(false);
+            }
+            for (Transparent t : z1_vs_01.getListeTrans()) {
+                t.setMarked(false);
+            }
+
+            System.out.println("--- VARIANTE 01-VS-01 ---");
             z1_vs_01.build_graph(seuil, verbose);
             z1_vs_01.findMaxMatching();
             z1_vs_01.printMatching();
@@ -78,6 +98,7 @@ public class Main {
         for (Transparent t : z1_vs_m.getListeTrans()) {
             t.setMarked(false);
         }
+        System.out.println("--- VARIANTE 01-VS-MANY ---");
         z1_vs_m.build_graph(seuil, verbose);
         z1_vs_m.findMaxMatching();
         z1_vs_m.printMatching();
