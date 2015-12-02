@@ -40,7 +40,7 @@ public class Test01vsMany {
 
             z1_vs_many.graph = new HashMap<Noeud, ArrayList<Noeud>>();
 
-            z1_vs_many.build_graph();
+            z1_vs_many.build_graph(0.1);
 
             System.out.println(z1_vs_many.graph.toString());
 
@@ -48,7 +48,7 @@ public class Test01vsMany {
 
             z1_vs_many.printMatching();
 
-            z1_vs_many.save_graph("test01vsM");
+            z1_vs_many.save_graph("test01vsM", "test");
 
     }
 }

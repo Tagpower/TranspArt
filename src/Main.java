@@ -11,21 +11,34 @@ public class Main {
     public static void main(String args[]) { //Argument 1 : Nom du dico, Argument 2 : seuil de similarité, Argument 3 : verbose
 
         String path_dico = "";
-        double seuil = 0.1;
+        double seuil_taux = 0.1;
+        int seuil_nb = 0;
+        boolean critere_taux = false;
         boolean verbose = false;
 
         switch (args.length) {
             case 3:
                 if (args[2].equals("verbose")) verbose = true;
             case 2:
-                seuil = Double.parseDouble(args[1]);
+                if (Integer.parseInt(args[1]) >= 1) {
+                    seuil_nb = Integer.parseInt(args[1]);
+                    if (verbose) {
+                        System.out.println("Utilisation du critère Nombre de mots en commun");
+                    }
+                } else {
+                    seuil_taux = Double.parseDouble(args[1]);
+                    critere_taux = true;
+                    if (verbose) {
+                        System.out.println("Utilisation du critère Taux de mots en commun");
+                    }
+                }
             case 1:
                 path_dico = args[0];
                 break;
             default:
                 System.out.println("Usage : java Main chemin_du_dictionnaire.txt [seuil_de_similarite] [verbose]\n" +
                                    "\tchemin_du_dictionnaire : le fichier texte contenant les mots importants\n" +
-                                   "\tseuil_de_similarite : valeur reelle entre 0 et 1 indiquant le taux de similarite minimum pour lier deux documents\n" +
+                                   "\tseuil_de_similarite : Au choix, valeur reelle entre 0 et 1 indiquant le taux de similarite minimum pour lier deux documents, ou valeur entière indiquant le nombre de mots du dictionnaire en commun minimum.\n" +
                                    "\tverbose : taper 'verbose' pour imprimer des informations supplementaires en console");
                 System.exit(0);
         }
@@ -70,12 +83,20 @@ public class Main {
             z1_vs_m.listeTrans.add(t);
         }
 
+
         try {
             System.out.println("--- VARIANTE 1-VS-01 ---");
-            one_vs_01.build_graph(seuil, verbose);
-            one_vs_01.findMaxMatching();
-            one_vs_01.printMatching();
-            one_vs_01.save_graph("oneVS01");
+            if (critere_taux) {
+                one_vs_01.build_graph(seuil_taux);
+                one_vs_01.findMaxMatching();
+                one_vs_01.printMatching();
+                one_vs_01.save_graph("oneVS01", "Critère : au moins "+ (seuil_taux*100) +" de mots en commun");
+            } else {
+                one_vs_01.build_graph(seuil_nb);
+                one_vs_01.findMaxMatching();
+                one_vs_01.printMatching();
+                one_vs_01.save_graph("oneVS01", "Critère : au moins "+ seuil_nb +" mots en commun");
+            }
         } catch (ImpossibleMatchingException e) {
             System.out.println("La variante 1-VS-01 n'a pas de solution.\nRecours à la variante ZeroOne-VS-ZeroOne");
             for (Page p : z1_vs_01.getListePages()) {
@@ -86,10 +107,18 @@ public class Main {
             }
 
             System.out.println("--- VARIANTE 01-VS-01 ---");
-            z1_vs_01.build_graph(seuil, verbose);
-            z1_vs_01.findMaxMatching();
-            z1_vs_01.printMatching();
-            z1_vs_01.save_graph("z1vs01");
+            if (critere_taux) {
+                z1_vs_01.build_graph(seuil_taux);
+                z1_vs_01.findMaxMatching();
+                z1_vs_01.printMatching();
+                z1_vs_01.save_graph("z1vs01", "Critère : au moins "+ (seuil_taux*100) +" de mots en commun");
+            } else {
+                z1_vs_01.build_graph(seuil_nb);
+                z1_vs_01.findMaxMatching();
+                z1_vs_01.printMatching();
+                z1_vs_01.save_graph("z1vs01", "Critère : au moins "+ seuil_nb +" mots en commun");
+            }
+
         }
 
         for (Page p : z1_vs_m.getListePages()) {
@@ -99,10 +128,17 @@ public class Main {
             t.setMarked(false);
         }
         System.out.println("--- VARIANTE 01-VS-MANY ---");
-        z1_vs_m.build_graph(seuil, verbose);
-        z1_vs_m.findMaxMatching();
-        z1_vs_m.printMatching();
-        z1_vs_m.save_graph("z1vsM");
+        if (critere_taux) {
+            z1_vs_m.build_graph(seuil_taux);
+            z1_vs_m.findMaxMatching();
+            z1_vs_m.printMatching();
+            z1_vs_m.save_graph("z1vsM", "Critère : au moins "+ (seuil_taux*100) +" de mots en commun");
+        } else {
+            z1_vs_m.build_graph(seuil_nb);
+            z1_vs_m.findMaxMatching();
+            z1_vs_m.printMatching();
+            z1_vs_m.save_graph("z1vsM", "Critère : au moins "+ seuil_nb +" mots en commun");
+        }
 
 
 

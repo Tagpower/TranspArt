@@ -103,7 +103,7 @@ public class Test3 {
 
         z1_vs_many.printMatching();
 
-        z1_vs_many.save_graph("test01_vs_M");
+        z1_vs_many.save_graph("test01_vs_M", "test");
 
     }
 }

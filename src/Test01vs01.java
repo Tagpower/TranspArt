@@ -97,7 +97,7 @@ public class Test01vs01 {
 
         z1_vs_01.printMatching();
 
-        z1_vs_01.save_graph("test01vs01");
+        z1_vs_01.save_graph("test01vs01", "test");
 
     }
 }

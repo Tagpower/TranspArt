@@ -60,7 +60,7 @@ public class Test {
 
         one_vs_01.setGraph(grapheTest);
         System.out.println(one_vs_01.graph.toString());
-        one_vs_01.save_graph("test");
+        one_vs_01.save_graph("test", "test");
 
         try {
             one_vs_01.findMaxMatching();
@@ -70,7 +70,7 @@ public class Test {
 
         one_vs_01.printMatching();
 
-        one_vs_01.save_graph("test");
+        one_vs_01.save_graph("test", "test");
 
     }
 }

@@ -16,6 +16,8 @@ public abstract class Method {
 
     protected HashMap<Transparent, Page> matching; //Couplage trouvé
 
+    protected boolean verbose;
+
 
     /**
      * Fonction remplissant le dictionnaire des mots importants depuis un fichier texte.
@@ -50,7 +52,7 @@ public abstract class Method {
      * Une arête est construite entre deux documents si et seulement si ils possèdent suffisamment de mots importants en commun.
      * Pour cette version, un seul mot en commun suffit.
      */
-    public void build_graph() { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
+    public void build_graph(int nb_mots_min) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
         Set<String> intersect = new HashSet<String>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
 
         for (Transparent t : listeTrans) {
@@ -63,7 +65,7 @@ public abstract class Method {
                     intersect.retainAll(important_words);
                 }
                 System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + intersect.size() + " mots en commun avec la page " + (listePages.indexOf(p)+1));
-                if (intersect.size() >= 1 ) {
+                if (intersect.size() >= nb_mots_min ) {
                     successors.add(p);
                 }
             }
@@ -79,9 +81,9 @@ public abstract class Method {
      * Construction du graphe biparti avec les <i>Transparents</i> d'un côté, et les <i>Pages</i> de l'autre.
      * Une arête est construite entre deux documents si et seulement si ils possèdent un taux de mots importants en commun suffisamment élevé.
      *
-     * @param alpha le taux minimum de mots en commun à avoir pour créer une arête
+     * @param taux_commun_min le taux minimum de mots en commun à avoir pour créer une arête
      */
-    public void build_graph(double alpha, boolean verbose) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
+    public void build_graph(double taux_commun_min) { //Construire le graphe biparti entre les Transparents et les Pages. Les arêtes sont les associations possibles entre eux.
         Set<String> intersect = new HashSet<>(); //Mots en commun d'un transparent, d'une page et du dictionnaire.
         Set<String> union = new HashSet<>(); //Ensemble des mots du transparent et de la page qui sont présents dans le dictionnaire.
 
@@ -102,7 +104,7 @@ public abstract class Method {
                 if (verbose) {
                     System.out.println("Le transparent " + (listeTrans.indexOf(t)+1) + " a " + (taux_commun*100) + " % de mots en commun avec la page " + (listePages.indexOf(p)+1));
                 }
-                if (taux_commun >= alpha) {
+                if (taux_commun >= taux_commun_min) {
                     successors.add(p); //Si la proportion de mots importants est plus grande que le seuil spécifié, une association des deux documents est alors envisageable : construire une arête.
                 }
             }
@@ -142,7 +144,7 @@ public abstract class Method {
      * Enregistrement du graphe sous forme d'un schéma en format .dot et .svg, pour la visualisation.
      * @param S le nom sous lequel enregistrer les fichiers
      */
-    public void save_graph(String S) {
+    public void save_graph(String S, String title) {
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(new BufferedWriter(new FileWriter("./dot/" + S)));
@@ -154,6 +156,9 @@ public abstract class Method {
 
         //Enregistrer le graphe au format .dot
         pw.println("graph " + S + "{");
+        pw.println("labelloc=\"t\";");
+        pw.println("label=\""+ title +"\";");
+
         for (Page p : listePages) {
             pw.println("\t" + p.getName() + "[label=" + p.getName() + ", style=filled, fillcolor=\"#cccccc\"]" /* + (t.isMarked() ? "[color=red]" : "") */ );
         }
