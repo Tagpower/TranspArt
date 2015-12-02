@@ -11,7 +11,8 @@ public class Test1vs01 {
 
     public static void main(String args[]) {
 
-        OneVSzeroOne one_vs_01 = new OneVSzeroOne();
+        OneVSzeroOne one_vs_01;
+        one_vs_01 = new OneVSzeroOne();
 
         one_vs_01.readDico(args[0]);
 

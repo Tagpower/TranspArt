@@ -17,7 +17,7 @@ public class Noeud {
 
     private String name; //Nom du document
     private Set<String> wordList; //Liste des mots du document
-    private boolean marked; //Un noeud est marqué s'il est couplé avec un autre noeud
+    private boolean marked; //Un noeud est marqué ou saturé s'il est couplé avec un autre noeud
 
     public Noeud() {
         wordList = new HashSet<String>();

@@ -1,0 +1,2 @@
+graphe algorithme notation polynomial complexite constante variable ligne etape court chemin Edmonds Dijkstra couplage introduction notation entree sortie quadratique variante Karp reseau flot Fulkerson capacite arc sommet
+

@@ -30,7 +30,7 @@ public class ZeroOneVSmany extends Method {
 
     /**
      * Fonction permettant de trouver un couplage maximal dans le graphe.
-     * Dans cette variante, il est possible de trouver un couplage maximal sans avoir à chercher des chemins augmentants.
+     * Dans cette variante, il est possible de trouver un couplage maximal sans avoir à chercher des chemins de croissance.
      * En traitant tour à tour chaque transparent, on peut tous les lier à une page, si le graphe le permet (présence de voisin(s) pour chaque transparent)
      * On cherche à coupler de préférence des transparents avec des pages non encore couplées, si c'est possible.
      */

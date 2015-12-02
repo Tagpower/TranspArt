@@ -45,39 +45,44 @@ public class OneVSzeroOne extends Method {
             throw new ImpossibleMatchingException("Couplage impossible : il y a plus de transparents que de pages.");
         }
 
-        //Création d'un premier couplage trivial, en couplant chaque transparent avec le premier voisin trouvé (si possible)
-        for (Transparent t : listeTrans) {
-            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
-            if (graph.get(t).isEmpty()) {
-                throw new ImpossibleMatchingException("Couplage impossible : un ou plusieurs transparents ne possèdent pas de voisins dans le graphe.");
-            }
-            for (Noeud p : graph.get(t)) {
-                if (!p.isMarked()) {
-                    neighbour = p;
-                    break;
-                }
-            }
-            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
-                matching.put(t, (Page)neighbour);
-                opposite_matching.put((Page)neighbour, t);
-                t.setMarked(true); //Marquer les deux sommets correspondant au nouveau couple.
-                neighbour.setMarked(true);
-            }
-        } //Premier couplage trivial fait
-        previous_matchings.add(matching);
+//        //Création d'un premier couplage trivial, en couplant chaque transparent avec le premier voisin trouvé (si possible)
+//        for (Transparent t : listeTrans) {
+//            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
+//            if (graph.get(t).isEmpty()) {
+//                throw new ImpossibleMatchingException("Couplage impossible : un ou plusieurs transparents ne possèdent pas de voisins dans le graphe.");
+//            }
+//            for (Noeud p : graph.get(t)) {
+//                if (!p.isMarked()) {
+//                    neighbour = p;
+//                    break;
+//                }
+//            }
+//            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
+//                matching.put(t, (Page)neighbour);
+//                opposite_matching.put((Page)neighbour, t);
+//                t.setMarked(true); //Marquer les deux sommets correspondant au nouveau couple.
+//                neighbour.setMarked(true);
+//            }
+//        } //Premier couplage trivial fait
+//        previous_matchings.add(matching);
 
         //Recherche d'un meilleur couplage
+        boolean chemin_de_croissance = false;
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
             for (Noeud n : listeTrans) { //Pour tout transparent n non marqué
                 if (!n.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(n); //Chercher un chemin augmentant dans le graphe.
                     improveMatching(chemin_augmentant); //Améliorer le couplage
-                    if (previous_matchings.contains(matching) && !isMaxMatching()) { //Si l'on retombe sur un couplage précédemment trouvé, arrêter l'algorithme : le couplage ne pourra pas être amélioré.
-                        System.out.println("Détection d'une boucle ! Arrêt de l'algorithme.");
-                        throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
-                    } else {
-                        previous_matchings.add(matching);
-                    }
+//                    if (previous_matchings.contains(matching) && !isMaxMatching()) { //Si l'on revient sur un couplage déjà obtenu, c'est qu'il n'existe pas de chemin de croissance pour améliorer le couplage.
+//                        System.out.println("Il n'y a plus de chemin de croissance : Arrêt de l'algorithme.");
+//                        throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
+//                    } else {
+//                        previous_matchings.add(matching);
+//                    }
+                }
+                if(!chemin_de_croissance) {
+                    System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
+                    return;
                 }
             }
         }
@@ -99,43 +104,53 @@ public class OneVSzeroOne extends Method {
      * @param chaine la chaîne augmentante à prolonger
      * @return une liste de noeuds représentant le chemin augmentant trouvé
      */
-    public ArrayList<Noeud> ameliorer(ArrayList<Noeud> chaine) { //Trouver un chemin augmentant à partir d'une chaine donnée
+    public ArrayList<Noeud> ameliorer(ArrayList<Noeud> chaine) { //Rechercher un chemin de croissance à partir d'une chaine donnée
         ArrayList<Noeud> chaine_alternee = new ArrayList<Noeud>();
         Noeud last = chaine.get(chaine.size() - 1); //On récupère le dernier sommet de la chaine
+        boolean chemin_de_croissance_trouve = false;
         for (Noeud voisin : graph.get(last)) { //Pour tous les voisins de ce sommet
             if (!chaine.contains(voisin)) {
-                if (!voisin.isMarked()) { //Si un voisin non marqué est trouvé, marquer les deux sommets : cela fera une nouvelle paire dans le couplage.
+                if (!voisin.isMarked()) {//Si un voisin non saturé est trouvé, il y a un chemin de croissance : les deux sommets aux extrémités sont insaturés.
                     chaine.add(voisin);
                     chaine_alternee = chaine; //chaine alternée = chaine U voisin
                     last.setMarked(true);
                     voisin.setMarked(true);
+                    chemin_de_croissance_trouve = true;
                     break;
-                } else { //Si un voisin non marqué est trouvé
+                } else { //Si un voisin saturé est trouvé
                     Noeud t = opposite_matching.get(voisin); //On récupère le partenaire de voisin dans le couplage (un transparent depuis une page)
                     chaine.add(voisin);
                     chaine.add(t);
-                    return ameliorer(chaine); //
+                    return ameliorer(chaine); //chaine = chaine U voisin U t
                 }
             }
+            if (!chemin_de_croissance_trouve) {
+                chaine_alternee.clear();
+            }
         }
-        return chaine_alternee; //retourner la chaine améliorante trouvée
+        return chaine_alternee; //retourner la chaine trouvée
     }
 
     /**
      * Fonction appliquant un chemin augmentant pour modifier (voire améliorer) le couplage actuellement trouvé
      * @param chemin le chemin augmentant à appliquer
      */
-    public void improveMatching(ArrayList<Noeud> chemin) {
-        boolean ajouter_arc = true; //On alterne entre la création et la destruction d'un couplage
-        for (int i=0; i<chemin.size()-1; i++) { //Pour chaque arête du chemin
-            if (ajouter_arc) { //Ajouter une arête entre deux sommets non liés
-                matching.put((Transparent)chemin.get(i), (Page)chemin.get(i+1));
-                opposite_matching.put((Page)chemin.get(i+1), (Transparent)chemin.get(i));
-            } else {          //Retirer les arêtes déjà présentes sur le chemin
-                matching.remove(chemin.get(i));
-                opposite_matching.remove(chemin.get(i + 1));
+    public boolean improveMatching(ArrayList<Noeud> chemin) {
+        if (!chemin.isEmpty()) {
+            boolean ajouter_arc = true; //On alterne entre la création et la destruction d'un couplage
+            for (int i = 0; i < chemin.size() - 1; i++) { //Pour chaque arête du chemin
+                if (ajouter_arc) { //Ajouter une arête entre deux sommets non liés
+                    matching.put((Transparent) chemin.get(i), (Page) chemin.get(i + 1));
+                    opposite_matching.put((Page) chemin.get(i + 1), (Transparent) chemin.get(i));
+                } else {          //Retirer les arêtes déjà présentes sur le chemin
+                    matching.remove(chemin.get(i));
+                    opposite_matching.remove(chemin.get(i + 1));
+                }
+                ajouter_arc = !ajouter_arc;
             }
-            ajouter_arc = !ajouter_arc;
+            return true;
+        } else {
+            return false;
         }
     }
 
