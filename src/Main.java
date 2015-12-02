@@ -20,16 +20,16 @@ public class Main {
             case 3:
                 if (args[2].equals("verbose")) verbose = true;
             case 2:
-                if (Integer.parseInt(args[1]) >= 1) {
-                    seuil_nb = Integer.parseInt(args[1]);
-                    if (verbose) {
-                        System.out.println("Utilisation du critère Nombre de mots en commun");
-                    }
-                } else {
+                if (Double.parseDouble(args[1]) < 1) {
                     seuil_taux = Double.parseDouble(args[1]);
                     critere_taux = true;
                     if (verbose) {
                         System.out.println("Utilisation du critère Taux de mots en commun");
+                    }
+                } else {
+                    seuil_nb = Integer.parseInt(args[1]);
+                    if (verbose) {
+                        System.out.println("Utilisation du critère Nombre de mots en commun");
                     }
                 }
             case 1:
