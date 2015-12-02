@@ -16,14 +16,17 @@ public class ZeroOneVSzeroOne extends Method {
 
     private HashMap<Page, Transparent> opposite_matching; //Couplage opposé, utilisé pour retrouver un transparent à partir d'une page dans le couplage initial.
     private ArrayList<HashMap<Transparent, Page>> previous_matchings; //Liste des couplages trouvés. Sert à détecter si l'algorithme ne se termine pas.
+    private boolean chemin_de_croissance = true;
 
-    public ZeroOneVSzeroOne() {
+    public ZeroOneVSzeroOne(boolean v) {
         listePages = new ArrayList<Page>();
         listeTrans = new ArrayList<Transparent>();
         important_words = new HashSet<String>();
         graph = new HashMap<Noeud, ArrayList<Noeud>>();
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
+
+        verbose = v;
     }
 
     /**
@@ -32,29 +35,42 @@ public class ZeroOneVSzeroOne extends Method {
      */
     @Override
     public boolean isMaxMatching() {
-        return (matching.size() == listeTrans.size() || matching.size() == listePages.size());
+        return (matching.size() == listeTrans.size() || matching.size() == listePages.size() || !chemin_de_croissance);
     }
 
     /**
      * Fonction permettant de trouver un couplage maximal dans le graphe, par remplissage d'un premier couplage trivial, puis par améliorations successives en trouvant un chemin augmentant.
      */
     public void findMaxMatching() {
+        //Création d'un premier couplage trivial.
+        for (Transparent t : listeTrans) {
+            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
+            if (!graph.get(t).isEmpty()) {
+                for (Noeud p : graph.get(t)) {
+                    if (!p.isMarked()) {
+                        neighbour = p;
+                        break;
+                    }
+                }
+            }
+            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
+                matching.put(t, (Page)neighbour);
+                opposite_matching.put((Page)neighbour, t);
+                t.setMarked(true);
+                neighbour.setMarked(true);
+            }
+        } //Premier couplage trivial fait
 
         //Recherche d'un meilleur couplage
-        boolean chemin_de_croissance = false;
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
             for (Transparent t : listeTrans) { //Pour tout transparent n non marqué
-                chemin_de_croissance = false;
                 if (!t.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(t);
                     chemin_de_croissance = improveMatching(chemin_augmentant); //Améliorer le couplage
                 }
             }
-            if(!chemin_de_croissance) {
-                System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
-                return;
-            }
         }
+        System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
 
     }
 

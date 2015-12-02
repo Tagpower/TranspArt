@@ -10,7 +10,7 @@ public class Test3 {
     //TEST
     public static void main(String[] args) {
 
-        ZeroOneVSmany z1_vs_many = new ZeroOneVSmany();
+        ZeroOneVSmany z1_vs_many = new ZeroOneVSmany(true);
 
         Transparent t1 = new Transparent();
         Transparent t2 = new Transparent();
@@ -103,7 +103,7 @@ public class Test3 {
 
         z1_vs_many.printMatching();
 
-        z1_vs_many.save_graph("test01_vs_M");
+        z1_vs_many.save_graph("test01_vs_M", "Test");
 
     }
 }

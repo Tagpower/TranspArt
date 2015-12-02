@@ -12,14 +12,17 @@ public class OneVSzeroOne extends Method {
 
     private HashMap<Page, Transparent> opposite_matching; //Couplage opposé, utilisé pour retrouver un transparent à partir d'une page dans le couplage initial.
     private ArrayList<HashMap<Transparent, Page>> previous_matchings; //Liste des couplages trouvés. Sert à détecter si l'algorithme ne se termine pas.
+    private boolean chemin_de_croissance = true;
 
-    public OneVSzeroOne() {
+    public OneVSzeroOne(boolean v) {
         listePages = new ArrayList<Page>(); //Liste des noeuds de l'ensemble Page
         listeTrans = new ArrayList<Transparent>(); //Liste des noeuds de l'ensemble Transparent
         important_words = new HashSet<String>(); //Ensemble des mots du dictionnaire
         graph = new HashMap<Noeud, ArrayList<Noeud>>(); //Graphe correspondant au problème, sous forme de listes d'adjacence.
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
+
+        verbose = v;
     }
 
     /**
@@ -27,7 +30,7 @@ public class OneVSzeroOne extends Method {
      * @return vrai si le couplage est optimal
      */
     public boolean isMaxMatching() {
-        return (matching.size() == listeTrans.size());
+        return (matching.size() == listeTrans.size() || !chemin_de_croissance);
     }
 
 
@@ -44,26 +47,36 @@ public class OneVSzeroOne extends Method {
             throw new ImpossibleMatchingException("Couplage impossible : il y a plus de transparents que de pages.");
         }
 
+        //Création d'un premier couplage trivial.
+        for (Transparent t : listeTrans) {
+            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
+            if (!graph.get(t).isEmpty()) {
+                for (Noeud p : graph.get(t)) {
+                    if (!p.isMarked()) {
+                        neighbour = p;
+                        break;
+                    }
+                }
+            }
+            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
+                matching.put(t, (Page)neighbour);
+                opposite_matching.put((Page)neighbour, t);
+                t.setMarked(true);
+                neighbour.setMarked(true);
+            }
+        } //Premier couplage trivial fait
+
         //Recherche d'un meilleur couplage
-        boolean chemin_de_croissance;
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
             for (Noeud n : listeTrans) { //Pour tout transparent n non marqué
-                chemin_de_croissance = false;
                 if (!n.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(n); //Chercher un chemin augmentant dans le graphe.
                     chemin_de_croissance = improveMatching(chemin_augmentant); //Améliorer le couplage
-//                    if (previous_matchings.contains(matching) && !isMaxMatching()) { //Si l'on revient sur un couplage déjà obtenu, c'est qu'il n'existe pas de chemin de croissance pour améliorer le couplage.
-//                        System.out.println("Il n'y a plus de chemin de croissance : Arrêt de l'algorithme.");
-//                        throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
-//                    } else {
-//                        previous_matchings.add(matching);
-//                    }
-                }
-                if(!chemin_de_croissance) {
-                    System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
-                    throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
                 }
             }
+        }
+        if(matching.size() < listeTrans.size()) {
+            throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
         }
 
     }

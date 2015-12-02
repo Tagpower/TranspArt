@@ -12,12 +12,14 @@ import java.util.HashSet;
  */
 public class ZeroOneVSmany extends Method {
 
-    public ZeroOneVSmany() {
+    public ZeroOneVSmany(boolean v) {
         listePages = new ArrayList<Page>();
         listeTrans = new ArrayList<Transparent>();
         graph = new HashMap<Noeud, ArrayList<Noeud>>();
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         important_words = new HashSet<String>();
+
+        verbose = v;
     }
 
     /**
