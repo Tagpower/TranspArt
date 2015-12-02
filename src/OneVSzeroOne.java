@@ -20,7 +20,6 @@ public class OneVSzeroOne extends Method {
         graph = new HashMap<Noeud, ArrayList<Noeud>>(); //Graphe correspondant au problème, sous forme de listes d'adjacence.
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
-        previous_matchings = new ArrayList<>(); //Liste de tous les couplages précedemment trouvés, pour détecter une boucle dans l'algorithme.
     }
 
     /**
@@ -45,34 +44,14 @@ public class OneVSzeroOne extends Method {
             throw new ImpossibleMatchingException("Couplage impossible : il y a plus de transparents que de pages.");
         }
 
-//        //Création d'un premier couplage trivial, en couplant chaque transparent avec le premier voisin trouvé (si possible)
-//        for (Transparent t : listeTrans) {
-//            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
-//            if (graph.get(t).isEmpty()) {
-//                throw new ImpossibleMatchingException("Couplage impossible : un ou plusieurs transparents ne possèdent pas de voisins dans le graphe.");
-//            }
-//            for (Noeud p : graph.get(t)) {
-//                if (!p.isMarked()) {
-//                    neighbour = p;
-//                    break;
-//                }
-//            }
-//            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
-//                matching.put(t, (Page)neighbour);
-//                opposite_matching.put((Page)neighbour, t);
-//                t.setMarked(true); //Marquer les deux sommets correspondant au nouveau couple.
-//                neighbour.setMarked(true);
-//            }
-//        } //Premier couplage trivial fait
-//        previous_matchings.add(matching);
-
         //Recherche d'un meilleur couplage
-        boolean chemin_de_croissance = false;
+        boolean chemin_de_croissance;
         while (!isMaxMatching()) { //Tant que le couplage n'est pas maximum, on cherche à l'améliorer.
             for (Noeud n : listeTrans) { //Pour tout transparent n non marqué
+                chemin_de_croissance = false;
                 if (!n.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(n); //Chercher un chemin augmentant dans le graphe.
-                    improveMatching(chemin_augmentant); //Améliorer le couplage
+                    chemin_de_croissance = improveMatching(chemin_augmentant); //Améliorer le couplage
 //                    if (previous_matchings.contains(matching) && !isMaxMatching()) { //Si l'on revient sur un couplage déjà obtenu, c'est qu'il n'existe pas de chemin de croissance pour améliorer le couplage.
 //                        System.out.println("Il n'y a plus de chemin de croissance : Arrêt de l'algorithme.");
 //                        throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
@@ -82,7 +61,7 @@ public class OneVSzeroOne extends Method {
                 }
                 if(!chemin_de_croissance) {
                     System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
-                    return;
+                    throw new ImpossibleMatchingException("Couplage optimal impossible : il n'est pas possible de coupler tous les transparents de ce graphe.");
                 }
             }
         }

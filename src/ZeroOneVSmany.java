@@ -36,7 +36,7 @@ public class ZeroOneVSmany extends Method {
      */
     @Override
     public void findMaxMatching() {
-        //Création d'un premier couplage trivial, en couplant chaque transparent avec le premier voisin trouvé (si possible)
+        //Création du couplage, en couplant chaque transparent avec le premier voisin trouvé (si possible)
         for (Transparent t : listeTrans) {
             Noeud neighbour = null; //On cherche le premier voisin de t non marqué
             for (Noeud p : graph.get(t)) {

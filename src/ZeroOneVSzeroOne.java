@@ -24,7 +24,6 @@ public class ZeroOneVSzeroOne extends Method {
         graph = new HashMap<Noeud, ArrayList<Noeud>>();
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
-        previous_matchings = new ArrayList<>();
     }
 
     /**
@@ -40,25 +39,6 @@ public class ZeroOneVSzeroOne extends Method {
      * Fonction permettant de trouver un couplage maximal dans le graphe, par remplissage d'un premier couplage trivial, puis par améliorations successives en trouvant un chemin augmentant.
      */
     public void findMaxMatching() {
-//        //Création d'un premier couplage trivial.
-//        for (Transparent t : listeTrans) {
-//            Noeud neighbour = null; //On cherche le premier voisin de t non marqué
-//            if (!graph.get(t).isEmpty()) {
-//                for (Noeud p : graph.get(t)) {
-//                    if (!p.isMarked()) {
-//                        neighbour = p;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (neighbour != null) { //S'il y a un voisin non marqué, on ajoute t et ce voisin au couplage.
-//                matching.put(t, (Page)neighbour);
-//                opposite_matching.put((Page)neighbour, t);
-//                t.setMarked(true);
-//                neighbour.setMarked(true);
-//            }
-//        } //Premier couplage trivial fait
-//        previous_matchings.add(matching);
 
         //Recherche d'un meilleur couplage
         boolean chemin_de_croissance = false;
@@ -68,12 +48,6 @@ public class ZeroOneVSzeroOne extends Method {
                 if (!t.isMarked()) {
                     ArrayList<Noeud> chemin_augmentant = ameliorer(t);
                     chemin_de_croissance = improveMatching(chemin_augmentant); //Améliorer le couplage
-//                    if (previous_matchings.contains(matching) && !isMaxMatching()) { //Si l'on revient sur un couplage déjà obtenu, c'est qu'il n'existe pas de chemin de croissance pour améliorer le couplage.
-//                        System.out.println("Il n'y a plus de chemin de croissance. Le couplage courant est maximal, arrêt de l'algorithme.");
-//                        return;
-//                    } else {
-//                        previous_matchings.add(matching);
-//                    }
                 }
             }
             if(!chemin_de_croissance) {
