@@ -82,8 +82,8 @@ public class Noeud {
     }
 
     /**
-     * Retourne un booléen indiquant si le noeud est marqué, c'est-à-dire s'il fait partie du couplage.
-     * @return vrai si le noeud est dans le couplage, faux sinon
+     * Retourne un booléen indiquant si le noeud est marqué/saturé, c'est-à-dire s'il fait partie du couplage.
+     * @return vrai si le noeud est saturé, faux sinon
      */
     public boolean isMarked() {
         return marked;

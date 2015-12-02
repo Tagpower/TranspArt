@@ -10,7 +10,7 @@ public class Test01vs01 {
     //TEST
     public static void main(String[] args) {
 
-        ZeroOneVSzeroOne z1_vs_01 = new ZeroOneVSzeroOne();
+        ZeroOneVSzeroOne z1_vs_01 = new ZeroOneVSzeroOne(true);
 
         Transparent t1 = new Transparent();
         Transparent t2 = new Transparent();
@@ -91,13 +91,13 @@ public class Test01vs01 {
         grapheTest.put(p9, new ArrayList<Noeud>(Arrays.asList(t7)));
 
         z1_vs_01.setGraph(grapheTest);
-        System.out.println(z1_vs_01.graph.toString());
+        //System.out.println(z1_vs_01.graph.toString());
 
         z1_vs_01.findMaxMatching();
 
         z1_vs_01.printMatching();
 
-        z1_vs_01.save_graph("test01vs01");
+        z1_vs_01.save_graph("test01vs01", "test");
 
     }
 }

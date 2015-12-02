@@ -12,7 +12,7 @@ public class Test1vs01 {
     public static void main(String args[]) {
 
         OneVSzeroOne one_vs_01;
-        one_vs_01 = new OneVSzeroOne();
+        one_vs_01 = new OneVSzeroOne(true);
 
         one_vs_01.readDico(args[0]);
 
@@ -52,7 +52,7 @@ public class Test1vs01 {
 
         one_vs_01.graph = new HashMap<Noeud, ArrayList<Noeud>>();
         //one_vs_01.build_graph();
-        one_vs_01.build_graph(Double.parseDouble(args[1]), false);
+        one_vs_01.build_graph(Double.parseDouble(args[1]));
         System.out.println(one_vs_01.graph.toString());
 
         try {
@@ -63,7 +63,7 @@ public class Test1vs01 {
 
         one_vs_01.printMatching();
 
-        one_vs_01.save_graph("test1vs01");
+        one_vs_01.save_graph("test1vs01", "Test");
 
     }
 }
