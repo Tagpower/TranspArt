@@ -104,18 +104,9 @@ public class ZeroOneVSzeroOne extends Method {
                     break;
                 } else { //Si un voisin saturé est trouvé
                     Noeud t = opposite_matching.get(voisin); //On récupère le partenaire de voisin dans le couplage (un transparent depuis une page) pour continuer le chemin.
-                    //Vérifier si t a des voisins non présents dans la chaîne
-//                    boolean voisins_pas_dans_chaine = false;
-//                    for (Noeud v : graph.get(t)) {
-//                        if (!chaine.contains(v)) {
-//                            voisins_pas_dans_chaine = true;
-//                        }
-//                    }
-//                    if(voisins_pas_dans_chaine) {
-                        chaine.add(voisin);
-                        chaine.add(t);
-                        return ameliorer(chaine);
-                    //}
+                    chaine.add(voisin);
+                    chaine.add(t);
+                    return ameliorer(chaine);
                 }
             }
             if (!chemin_de_croissance_trouve) {

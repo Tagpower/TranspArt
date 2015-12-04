@@ -22,12 +22,12 @@ public class OneVSzeroOne extends Method {
         matching = new HashMap<Transparent, Page>(); //Couplage transparent -> page
         opposite_matching = new HashMap<Page, Transparent>(); //Couplage page -> transparent
 
-        verbose = v;
+        verbose = v; //Paramètre de verbosité
     }
 
     /**
-     * Retourne un booléen indiquant si le couplage est optimal, c'est-à-dire si tous les transparents sont couplés.
-     * @return vrai si le couplage est optimal
+     * Retourne un booléen indiquant si le couplage est maximal, c'est-à-dire si le maximum de transparents sont couplés.
+     * @return vrai si le couplage est maximal
      */
     public boolean isMaxMatching() {
         return (matching.size() == listeTrans.size() || !chemin_de_croissance);

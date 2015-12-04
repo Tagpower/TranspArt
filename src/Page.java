@@ -1,5 +1,6 @@
 /**
  * Classe représentant un noeud correspondant à une <i>Page</i>.
+ *
  * @author Clément Bauchet
  * @author Mélissa Obodje
  */

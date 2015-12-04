@@ -58,7 +58,7 @@ public class Main {
         File[] page_files = rep_pages.listFiles(only_txt);
         File[] trans_files = rep_trans.listFiles(only_txt);
         Arrays.sort(page_files);
-        Arrays.sort(trans_files);
+        Arrays.sort(trans_files); //Tri des fichiers dans l'ordre aplphabétique des noms
 
         OneVSzeroOne one_vs_01 = new OneVSzeroOne(verbose);
         ZeroOneVSzeroOne z1_vs_01 = new ZeroOneVSzeroOne(verbose);
@@ -138,19 +138,5 @@ public class Main {
             z1_vs_m.printMatching();
             z1_vs_m.save_graph("z1vsM", "ZeroOne-VS-Many\nCritère : au moins "+ seuil_nb +" mots en commun");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
